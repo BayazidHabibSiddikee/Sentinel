@@ -73,13 +73,19 @@ async def _extract_user_info(user_msg: str, marin_reply: str):
         _llm, key, model = llm_info
 
         extraction_prompt = (
-            "Analyze this conversation. Extract ONLY important facts about the USER "
-            "(preferences, habits, goals, personality, background, relationships, skills, dislikes). "
+            "Analyze this conversation. Extract important facts about the USER "
+            "(preferences, habits, goals, personality, background, relationships, skills, dislikes) "
+            "AND important academic schedule facts such as EXAM DATES, CT/class-test dates, "
+            "and class timings/schedule that the user mentions."
             "Return a JSON array of objects with 'category', 'key', 'value'. "
-            "Categories: personal, academic, work, preferences, skills, relationships, goals, habits, personality. "
+            "Categories: personal, academic, work, preferences, skills, relationships, goals, habits, personality, "
+            "exam_dates, ct_dates, class_schedule. "
+            "- Use 'exam_dates' for anything like 'final on X', 'CT next week', 'exam on DATE'.\n"
+            "- Use 'ct_dates' for class-test / CT / quiz dates per course.\n"
+            "- Use 'class_schedule' for class timings, routine, periods, rooms.\n"
             "Only include genuinely useful facts. Return empty array [] if nothing important. "
             "NO explanation, ONLY the JSON array.\n\n"
-            f"USER: {user_msg[:500]}\n"
+            f"USER: {user_msg[:700]}\n"
             f"MARIN: {marin_reply[:500]}"
         )
         messages = [{"role": "user", "content": extraction_prompt}]

@@ -192,6 +192,50 @@ def vault_search(query: str) -> list:
         rows = cursor.fetchall()
     return [dict(r) for r in rows]
 
+def vault_as_context(categories: Optional[List[str]] = None) -> str:
+    """Return vault facts formatted as a compact context block for the LLM."""
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor(cursor_factory=DictCursor)
+            if categories:
+                cursor.execute(
+                    "SELECT category, key, value FROM vault WHERE category = ANY(%s) ORDER BY category, key",
+                    (categories,)
+                )
+            else:
+                cursor.execute("SELECT category, key, value FROM vault ORDER BY category, key")
+            rows = cursor.fetchall()
+        if not rows:
+            return ""
+        return "\n".join(f"{r['category']}: {r['key']} = {r['value']}" for r in rows)
+    except Exception as e:
+        return f"[Vault unavailable: {e}]"
+
+# ── Academic Schedule Memory API ──────────────────────────────────────────────
+# Categories used by the agent to remember the semester:
+#   exam_dates      -> course/exam name -> date or range
+#   ct_dates        -> course code -> CT date
+#   class_schedule  -> day+period -> course code + teacher
+ACADEMIC_CATEGORIES = ["exam_dates", "ct_dates", "class_schedule"]
+
+def schedule_get_all() -> dict:
+    """Return all remembered academic schedule facts grouped by category."""
+    out = {c: [] for c in ACADEMIC_CATEGORIES}
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor(cursor_factory=DictCursor)
+            cursor.execute(
+                "SELECT category, key, value, confidence, source, updated_at FROM vault "
+                "WHERE category = ANY(%s) ORDER BY category, key",
+                (ACADEMIC_CATEGORIES,)
+            )
+            rows = cursor.fetchall()
+        for r in rows:
+            out.setdefault(r["category"], []).append(dict(r))
+    except Exception as e:
+        print(f"[Schedule] read error: {e}")
+    return out
+
 # ── Chat History API ─────────────────────────────────────────────────────────
 def save_message(agent: str, role: str, content: str):
     with get_connection() as conn:

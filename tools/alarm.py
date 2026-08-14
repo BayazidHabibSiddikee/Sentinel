@@ -30,6 +30,29 @@ def parse_alarm(inp: str) -> str:
     return t.strip()
 
 
+def play_alarm_sound():
+    sound_path = Path(__file__).resolve().parent / "mixkit-classic-alarm-995.wav"
+    if not sound_path.exists():
+        return False
+    
+    import shutil
+    import subprocess
+    players = ["paplay", "aplay", "pw-play", "mpv", "cvlc", "mpg123"]
+    for p in players:
+        if shutil.which(p):
+            try:
+                if p == "mpv":
+                    subprocess.run([p, "--no-video", str(sound_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                elif p == "cvlc":
+                    subprocess.run([p, "--play-and-exit", str(sound_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    subprocess.run([p, str(sound_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                return True
+            except Exception:
+                continue
+    return False
+
+
 def run_alarm(inp: str):
     alarm_time = parse_alarm(inp)
     if not alarm_time:
@@ -52,6 +75,7 @@ def run_alarm(inp: str):
             sys.stdout.flush()
             print("SPEAK: Alarm triggered!")
             sys.stdout.flush()
+            play_alarm_sound()
             break
         time.sleep(5)
 
@@ -61,3 +85,4 @@ if __name__ == '__main__':
         print("SPEAK: No alarm command provided.")
         sys.exit(1)
     run_alarm(' '.join(sys.argv[1:]))
+

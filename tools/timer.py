@@ -19,6 +19,29 @@ def format_duration(seconds: int) -> str:
     return " ".join(parts) if parts else "0 seconds"
 
 
+def play_alarm_sound():
+    sound_path = Path(__file__).resolve().parent / "mixkit-classic-alarm-995.wav"
+    if not sound_path.exists():
+        return False
+
+    import shutil
+    import subprocess
+    players = ["paplay", "aplay", "pw-play", "mpv", "cvlc", "mpg123"]
+    for p in players:
+        if shutil.which(p):
+            try:
+                if p == "mpv":
+                    subprocess.run([p, "--no-video", str(sound_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                elif p == "cvlc":
+                    subprocess.run([p, "--play-and-exit", str(sound_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    subprocess.run([p, str(sound_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                return True
+            except Exception:
+                continue
+    return False
+
+
 def run_timer(duration_seconds: int):
     if duration_seconds <= 0:
         print("SPEAK: Invalid duration.")
@@ -28,7 +51,7 @@ def run_timer(duration_seconds: int):
     target = datetime.now() + timedelta(seconds=duration_seconds)
     end_str = target.strftime('%H:%M:%S')
 
-    print(f"\u2192 Starting timer for [{label}]")
+    print(f"→ Starting timer for [{label}]")
     print(f"SPEAK: Timer set for {label}. Goes off at {target.strftime('%I:%M %p')}.")
     sys.stdout.flush()
 
@@ -37,6 +60,8 @@ def run_timer(duration_seconds: int):
             print("SPEAK: Time's up!")
             sys.stdout.flush()
             print("SPEAK: Timer done!")
+            sys.stdout.flush()
+            play_alarm_sound()
             break
         time.sleep(1)
 
@@ -47,3 +72,4 @@ if __name__ == '__main__':
                         help='Duration in seconds (e.g. 300 = 5 minutes)')
     args = parser.parse_args()
     run_timer(args.duration)
+

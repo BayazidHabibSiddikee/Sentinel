@@ -819,6 +819,68 @@ async def get_contacts_endpoint():
     return {"contacts": get_contacts()}
 
 
+# ── ACADEMIC SCHEDULE MEMORY ─────────────────────────────────────────────────
+# Exam dates, CT dates and classes are remembered by the agent in the vault, so
+# Marin can recall them in conversation. Attendance stays user-driven.
+
+
+@app.get("/api/schedule")
+async def schedule_get():
+    """Return everything the agent remembers: exam dates, CT dates, class schedule."""
+    return database.schedule_get_all()
+
+
+class ScheduleEntry(BaseModel):
+    category: str   # exam_dates | ct_dates | class_schedule
+    key: str        # e.g. course code, exam name, or 'Sat P4'
+    value: str      # e.g. '2026-12-01', 'MTE 3201 - SHA 10:50-11:40'
+
+
+@app.post("/api/schedule")
+async def schedule_add(req: ScheduleEntry):
+    """Add or update an academic schedule fact the agent should remember."""
+    allowed = database.ACADEMIC_CATEGORIES
+    if req.category not in allowed:
+        return JSONResponse(
+            {"error": f"category must be one of {allowed}"}, status_code=400
+        )
+    if not req.key.strip() or not req.value.strip():
+        return JSONResponse({"error": "key and value are required"}, status_code=400)
+    ok = database.vault_upsert(req.category, req.key.strip(), req.value.strip(),
+                               confidence=1.0, source="api")
+    return {"ok": ok, "category": req.category, "key": req.key}
+
+
+@app.delete("/api/schedule/{category}/{key}")
+async def schedule_delete(category: str, key: str):
+    """Forget a schedule fact the agent no longer needs."""
+    if category not in database.ACADEMIC_CATEGORIES:
+        return JSONResponse(
+            {"error": f"category must be one of {database.ACADEMIC_CATEGORIES}"}, status_code=400
+        )
+    database.vault_delete(category, key)
+    return {"ok": True, "deleted": f"{category}:{key}"}
+
+
+@app.post("/api/schedule/sync-attendance")
+async def schedule_sync_attendance():
+    """Import the class routine from the attendance tracker so the agent remembers it."""
+    try:
+        from attendance.main import CLASS_ROUTINE
+        count = 0
+        for day, entries in CLASS_ROUTINE.items():
+            for entry in entries:
+                # entry format: (period, time, course_code, teacher, note)
+                period, time, course, teacher, note = entry
+                label = f"{day} P{period}"
+                detail = f"{course} - {teacher or 'TBD'} {time}" + (f" ({note})" if note else "")
+                if database.vault_upsert("class_schedule", label, detail, confidence=1.0, source="attendance"):
+                    count += 1
+        return {"ok": True, "imported_classes": count}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 # ── ATTENDANCE APP (mounted under /attendance) ───────────────────────────────
 # RUET 3-2 Semester Attendance Tracker — served on the same server as Sentinel.
 # The attendance UI's API calls are prefixed with /attendance in its index.html,
