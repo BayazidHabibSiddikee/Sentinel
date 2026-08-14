@@ -600,7 +600,7 @@ function today() {
 
 async function openFile(relPath) {
   try {
-    const r = await fetch('/api/open-file', {
+    const r = await fetch('/attendance/api/open-file', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path: relPath })
@@ -657,7 +657,7 @@ document.querySelectorAll('.modal').forEach(m => {
 
 // ── Load data ──────────────────────────────────────────────────────────────
 async function loadStats() {
-  const r = await fetch('/api/stats');
+  const r = await fetch('/attendance/api/stats');
   const d = await r.json();
   stats = d.stats;
   renderDashboardStats();
@@ -665,14 +665,14 @@ async function loadStats() {
 }
 
 async function loadCourses() {
-  const r = await fetch('/api/courses');
+  const r = await fetch('/attendance/api/courses');
   courses = await r.json();
   coursesLoaded = true;
   renderCourses();
 }
 
 async function loadSemFiles() {
-  const r = await fetch('/api/semester-files');
+  const r = await fetch('/attendance/api/semester-files');
   semFiles = await r.json();
   renderResources();
 }
@@ -719,7 +719,7 @@ function renderGPA(gpa) {
 
 // ── Today's Classes ────────────────────────────────────────────────────────
 async function renderTodayClasses() {
-  const r = await fetch('/api/today-check');
+  const r = await fetch('/attendance/api/today-check');
   const d = await r.json();
   const el = document.getElementById('today-classes');
   if (!d.has_classes) {
@@ -741,7 +741,7 @@ async function renderTodayClasses() {
 
 // ── Attendance ─────────────────────────────────────────────────────────────
 async function renderAttendance() {
-  const r = await fetch('/api/attendance');
+  const r = await fetch('/attendance/api/attendance');
   const d = await r.json();
   const s = d.stats;
   document.getElementById('att-present').textContent  = s.present_days;
@@ -771,7 +771,7 @@ async function renderAttendance() {
 
 async function deleteAtt(dateStr) {
   if (!confirm(`Delete attendance record for ${dateStr}?`)) return;
-  const r = await fetch('/api/attendance/' + dateStr, { method: 'DELETE' });
+  const r = await fetch('/attendance/api/attendance/' + dateStr, { method: 'DELETE' });
   if (r.ok) { toast('🗑 Deleted ' + dateStr); await loadStats(); renderAttendance(); }
   else { const e = await r.json(); toast('❌ ' + e.detail); }
 }
@@ -785,7 +785,7 @@ async function submitAttendance(event, prefix) {
   const coursesArr = courseSel ? Array.from(courseSel.selectedOptions).map(o => o.value) : [];
   const notesVal  = document.getElementById(prefix + '-notes').value;
 
-  const r = await fetch('/api/attendance', {
+  const r = await fetch('/attendance/api/attendance', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ date: dateVal, status: statusVal, courses_attended: coursesArr, notes: notesVal })
@@ -804,7 +804,7 @@ async function submitAttendance(event, prefix) {
 
 // ── Routine ────────────────────────────────────────────────────────────────
 async function renderRoutine() {
-  const r = await fetch('/api/routine');
+  const r = await fetch('/attendance/api/routine');
   const d = await r.json();
   const days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const allPeriods = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -850,7 +850,7 @@ function renderCourses() {
 
 // ── Marks ──────────────────────────────────────────────────────────────────
 async function renderMarks() {
-  const r = await fetch('/api/marks');
+  const r = await fetch('/attendance/api/marks');
   const d = await r.json();
   const el = document.getElementById('marks-content');
   if (Object.keys(d.marks).length === 0) {
@@ -887,7 +887,7 @@ async function submitMarks(event) {
     ct1: n('m-ct1'), ct2: n('m-ct2'), ct3: n('m-ct3'), ct4: n('m-ct4'),
     assignment: n('m-assignment'), attendance_marks: n('m-att-marks'), final: n('m-final')
   };
-  const r = await fetch('/api/marks', {
+  const r = await fetch('/attendance/api/marks', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -1033,7 +1033,7 @@ async function init() {
 
 async function checkTodayPrompt() {
   try {
-    const r = await fetch('/api/today-check');
+    const r = await fetch('/attendance/api/today-check');
     const d = await r.json();
     if (d.has_classes && !d.marked) {
       setTimeout(() => {

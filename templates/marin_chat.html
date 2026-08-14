@@ -834,6 +834,7 @@
             <button class="stab active" onclick="switchSettingsTab('general')" id="stab-general">General</button>
             <button class="stab" onclick="switchSettingsTab('providers')" id="stab-providers">Providers</button>
             <button class="stab" onclick="switchSettingsTab('models')" id="stab-models">Models</button>
+            <button class="stab" onclick="switchSettingsTab('email')" id="stab-email">✉ Email</button>
             <button class="stab" onclick="switchSettingsTab('danger')" id="stab-danger" style="margin-left:auto;color:var(--danger);">⚠ Uninstall</button>
         </div>
 
@@ -907,6 +908,59 @@
             </div>
 
             <div id="uninstall-result" style="font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--success);min-height:20px;"></div>
+        </div>
+
+        <!-- ─── EMAIL TAB ─── -->
+        <div id="stab-content-email" class="stab-content" style="display:none;flex:1;overflow-y:auto;flex-direction:column;gap:12px;padding-right:4px;">
+
+            <!-- SMTP Config -->
+            <div style="font-size:.6rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:2px;">SMTP CONFIGURATION</div>
+
+            <label class="set-label">SENDER EMAIL (Gmail recommended)
+                <input id="set-email-sender" type="email" placeholder="yourname@gmail.com">
+            </label>
+            <label class="set-label">APP PASSWORD
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <input id="set-email-password" type="password" placeholder="Leave blank to keep current" style="flex:1;">
+                    <span id="set-email-pw-status" style="font-size:.65rem;color:var(--success);"></span>
+                </div>
+                <div style="font-size:.6rem;color:var(--text-muted);margin-top:2px;">Use a Gmail App Password, not your account password. <a href="https://myaccount.google.com/apppasswords" target="_blank" style="color:var(--teal);">Generate one →</a></div>
+            </label>
+            <label class="set-label">DISPLAY NAME
+                <input id="set-email-display" type="text" placeholder="Sentinel — RUET Study Platform">
+            </label>
+            <div style="display:flex;gap:8px;">
+                <label class="set-label" style="flex:1;">SMTP HOST
+                    <input id="set-email-host" type="text" placeholder="smtp.gmail.com">
+                </label>
+                <label class="set-label" style="width:80px;">PORT
+                    <input id="set-email-port" type="number" placeholder="587">
+                </label>
+            </div>
+            <button onclick="testEmailConfig()" class="set-dashed-btn" id="email-test-btn">⚡ Test Connection</button>
+            <div id="email-test-result" style="font-size:.68rem;min-height:16px;"></div>
+
+            <!-- Contact Book -->
+            <div style="font-size:.6rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-top:8px;margin-bottom:2px;">CONTACT BOOK</div>
+            <div style="font-size:.62rem;color:var(--text-muted);margin-bottom:4px;">Add RUET students and teachers to send emails quickly from the sidebar.</div>
+
+            <div id="contacts-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+
+            <!-- Add contact form -->
+            <div style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:10px;display:flex;flex-direction:column;gap:6px;">
+                <div style="font-size:.6rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">ADD CONTACT</div>
+                <div style="display:flex;gap:6px;">
+                    <input id="new-contact-name" type="text" placeholder="Name" class="set-label" style="flex:1;padding:6px 8px;font-size:.8rem;">
+                    <select id="new-contact-role" style="background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.78rem;padding:6px 8px;">
+                        <option value="student">👤 Student</option>
+                        <option value="teacher">🎓 Teacher</option>
+                        <option value="classmate">🤝 Classmate</option>
+                    </select>
+                </div>
+                <input id="new-contact-email" type="email" placeholder="email@ruet.ac.bd" style="width:100%;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.8rem;">
+                <input id="new-contact-dept" type="text" placeholder="Department (e.g. EEE, CSE, ME)" style="width:100%;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.8rem;">
+                <button onclick="addContact()" class="set-dashed-btn">+ Add Contact</button>
+            </div>
         </div>
 
         <div id="settings-msg" style="flex-shrink:0;margin-top:8px;font-size:.75rem;color:var(--teal);"></div>
@@ -999,6 +1053,36 @@
 
         <div class="sidebar-tools">
             <button onclick="openTimerDialog()">&#9654; Focus Session</button>
+        </div>
+
+        <!-- EMAIL COMPOSER -->
+        <div style="padding: 4px 16px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+            <div style="color:var(--text-muted);font-size:.6rem;font-family:'JetBrains Mono',monospace;margin-bottom:6px;">✉ EMAIL COMPOSER</div>
+
+            <!-- Quick contact selector -->
+            <div style="position:relative;margin-bottom:4px;">
+                <input type="text" id="email-to-input" placeholder="To: name or email..." autocomplete="off"
+                    style="width:100%;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.75rem;"
+                    oninput="filterEmailContacts()" onfocus="filterEmailContacts()">
+                <div id="email-contact-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--ink2);border:1px solid var(--border);border-radius:var(--radius-sm);z-index:500;max-height:120px;overflow-y:auto;"></div>
+            </div>
+
+            <input type="text" id="email-cc-input" placeholder="CC: (optional)" style="width:100%;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.75rem;margin-bottom:4px;">
+            <input type="text" id="email-subject-input" placeholder="Subject..." style="width:100%;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.75rem;margin-bottom:4px;">
+
+            <!-- Quick subject presets -->
+            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px;">
+                <button onclick="setEmailSubject('Study Group Invitation')" style="padding:3px 7px;background:var(--ink2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);font-size:.6rem;cursor:pointer;">Study Group</button>
+                <button onclick="setEmailSubject('Assignment Help Request')" style="padding:3px 7px;background:var(--ink2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);font-size:.6rem;cursor:pointer;">Help Request</button>
+                <button onclick="setEmailSubject('Question on Course Material')" style="padding:3px 7px;background:var(--ink2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);font-size:.6rem;cursor:pointer;">Course Q</button>
+            </div>
+
+            <textarea id="email-body-input" rows="4" placeholder="Write your message here..."
+                style="width:100%;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.75rem;resize:vertical;font-family:'DM Sans',sans-serif;"></textarea>
+
+            <button onclick="sendEmailFromSidebar()" id="email-send-btn"
+                style="width:100%;padding:7px;background:var(--teal);color:#000;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:.72rem;font-family:'JetBrains Mono',monospace;margin-top:4px;font-weight:500;">Send Email ↗</button>
+            <div id="email-send-result" style="margin-top:6px;font-size:.65rem;color:var(--teal);min-height:16px;"></div>
         </div>
     </aside>
 
@@ -1683,6 +1767,289 @@
     function addKeyField(value = '') {}
     function renderModelCheckboxes(selectedIds) {}
     function updateActiveModelDropdown() {}
+
+    // ══════════════════════════════════════════════════════════
+    // EMAIL SETTINGS & CONTACT BOOK
+    // ══════════════════════════════════════════════════════════
+    let _emailContacts = [];  // live cache for autocomplete
+
+    async function loadEmailSettings() {
+        try {
+            const res = await fetch('/api/settings/email?_=' + Date.now());
+            const data = await res.json();
+            document.getElementById('set-email-sender').value      = data.email_sender       || '';
+            document.getElementById('set-email-display').value     = data.email_display_name || 'Sentinel — RUET Study Platform';
+            document.getElementById('set-email-host').value        = data.email_smtp_host    || 'smtp.gmail.com';
+            document.getElementById('set-email-port').value        = data.email_smtp_port    || 587;
+            document.getElementById('set-email-pw-status').textContent = data.email_password_set ? '✔ Password saved' : '';
+            _emailContacts = Array.isArray(data.contacts) ? data.contacts : [];
+            renderContactList();
+        } catch (e) {
+            console.error('Email settings load error:', e);
+        }
+    }
+
+    async function saveEmailSettings() {
+        const payload = {
+            email_sender:       document.getElementById('set-email-sender').value.trim(),
+            email_display_name: document.getElementById('set-email-display').value.trim(),
+            email_smtp_host:    document.getElementById('set-email-host').value.trim(),
+            email_smtp_port:    parseInt(document.getElementById('set-email-port').value) || 587,
+            contacts:           _emailContacts,
+        };
+        const pw = document.getElementById('set-email-password').value;
+        if (pw) payload.email_password = pw;
+
+        const res = await fetch('/api/settings/email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        return await res.json();
+    }
+
+    // Hook email save into the main Save button when email tab is active
+    const _origSaveSettings = saveSettings;
+    saveSettings = async function() {
+        const activeTab = document.querySelector('.stab.active');
+        if (activeTab && activeTab.id === 'stab-email') {
+            const msg = document.getElementById('settings-msg');
+            try {
+                const r = await saveEmailSettings();
+                if (r.status === 'success') {
+                    msg.textContent = 'Email settings saved!';
+                    msg.style.color = 'var(--success)';
+                    document.getElementById('set-email-pw-status').textContent = '✔ Password saved';
+                    document.getElementById('set-email-password').value = '';
+                    setTimeout(() => closeSettings(), 900);
+                } else {
+                    msg.textContent = 'Error saving email settings.';
+                    msg.style.color = 'var(--danger)';
+                }
+            } catch(e) {
+                msg.textContent = 'Error: ' + e;
+                msg.style.color = 'var(--danger)';
+            }
+            return;
+        }
+        return _origSaveSettings();
+    };
+
+    // Load email settings when Email tab is clicked
+    const _origSwitch = switchSettingsTab;
+    switchSettingsTab = function(tab) {
+        _origSwitch(tab);
+        if (tab === 'email') loadEmailSettings();
+    };
+
+    // ── Test email connection ─────────────────────────────────
+    async function testEmailConfig() {
+        const btn = document.getElementById('email-test-btn');
+        const result = document.getElementById('email-test-result');
+        btn.textContent = 'Testing...';
+        btn.disabled = true;
+        result.style.color = 'var(--text-muted)';
+        result.textContent = 'Sending test email to yourself...';
+
+        // Save first
+        await saveEmailSettings();
+
+        const sender = document.getElementById('set-email-sender').value.trim();
+        if (!sender) {
+            result.textContent = '❌ Please enter a sender email first.';
+            result.style.color = 'var(--danger)';
+            btn.textContent = '⚡ Test Connection'; btn.disabled = false;
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/tools/send_email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: sender,
+                    subject: '✅ Sentinel Email Test',
+                    body: 'This is a test email from Sentinel — RUET AI Academic Platform. If you received this, your email configuration is working correctly.'
+                })
+            });
+            const data = await res.json();
+            if (data.error) {
+                result.textContent = data.error;
+                result.style.color = 'var(--danger)';
+            } else {
+                result.textContent = data.message || '✅ Test email sent!';
+                result.style.color = 'var(--success)';
+            }
+        } catch(e) {
+            result.textContent = '❌ Request failed: ' + e;
+            result.style.color = 'var(--danger)';
+        }
+        btn.textContent = '⚡ Test Connection'; btn.disabled = false;
+    }
+
+    // ── Contact book ─────────────────────────────────────────
+    const ROLE_ICONS = { student: '👤', teacher: '🎓', classmate: '🤝' };
+
+    function renderContactList() {
+        const list = document.getElementById('contacts-list');
+        if (!list) return;
+        list.innerHTML = '';
+        if (!_emailContacts.length) {
+            list.innerHTML = '<div style="font-size:.65rem;color:var(--text-muted);font-style:italic;">No contacts yet.</div>';
+            return;
+        }
+        _emailContacts.forEach((c, i) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--ink);border:1px solid var(--border);border-radius:var(--radius-sm);';
+            const icon = ROLE_ICONS[c.role] || '👤';
+            row.innerHTML = `
+                <span style="font-size:.85rem;">${icon}</span>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:.75rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(c.name)}</div>
+                    <div style="font-size:.62rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(c.email)}${c.dept ? ' · ' + escapeHtml(c.dept) : ''}</div>
+                </div>
+                <button onclick="quickEmailContact(${i})" title="Compose email" style="background:none;border:1px solid var(--border);color:var(--teal);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:.7rem;flex-shrink:0;">✉</button>
+                <button onclick="deleteContact(${i})" title="Delete" style="background:none;border:1px solid var(--border);color:var(--danger);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:.7rem;flex-shrink:0;">✕</button>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function addContact() {
+        const name  = document.getElementById('new-contact-name').value.trim();
+        const email = document.getElementById('new-contact-email').value.trim();
+        const role  = document.getElementById('new-contact-role').value;
+        const dept  = document.getElementById('new-contact-dept').value.trim();
+
+        if (!name || !email) {
+            alert('Name and email are required.');
+            return;
+        }
+        if (!email.includes('@')) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+        _emailContacts.push({ name, email, role, dept });
+        renderContactList();
+        // Clear form
+        ['new-contact-name','new-contact-email','new-contact-dept'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+    }
+
+    function deleteContact(idx) {
+        _emailContacts.splice(idx, 1);
+        renderContactList();
+    }
+
+    function quickEmailContact(idx) {
+        const c = _emailContacts[idx];
+        if (!c) return;
+        // Close settings and pre-fill the sidebar composer
+        closeSettings();
+        document.getElementById('email-to-input').value = c.email;
+        document.getElementById('email-subject-input').focus();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // SIDEBAR EMAIL COMPOSER
+    // ══════════════════════════════════════════════════════════
+
+    // Load contacts into the autocomplete cache on page load
+    (async function initEmailContacts() {
+        try {
+            const res = await fetch('/api/tools/contacts');
+            const data = await res.json();
+            _emailContacts = Array.isArray(data.contacts) ? data.contacts : [];
+        } catch {}
+    })();
+
+    function filterEmailContacts() {
+        const input = document.getElementById('email-to-input');
+        const dropdown = document.getElementById('email-contact-dropdown');
+        const q = input.value.trim().toLowerCase();
+
+        const matches = _emailContacts.filter(c =>
+            c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)
+        );
+
+        if (!matches.length || !q) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        dropdown.innerHTML = '';
+        matches.slice(0, 8).forEach(c => {
+            const icon = ROLE_ICONS[c.role] || '👤';
+            const item = document.createElement('div');
+            item.style.cssText = 'padding:6px 10px;cursor:pointer;font-size:.75rem;color:var(--text);border-bottom:1px solid var(--border);';
+            item.innerHTML = `${icon} <strong>${escapeHtml(c.name)}</strong> <span style="color:var(--text-muted);font-size:.65rem;">${escapeHtml(c.email)}</span>`;
+            item.onmousedown = (e) => {
+                e.preventDefault();
+                input.value = c.email;
+                dropdown.style.display = 'none';
+            };
+            item.onmouseover = () => { item.style.background = 'var(--ink3)'; };
+            item.onmouseout  = () => { item.style.background = ''; };
+            dropdown.appendChild(item);
+        });
+        dropdown.style.display = 'block';
+    }
+
+    document.addEventListener('click', (e) => {
+        const dd = document.getElementById('email-contact-dropdown');
+        if (dd && !dd.contains(e.target) && e.target.id !== 'email-to-input') {
+            dd.style.display = 'none';
+        }
+    });
+
+    function setEmailSubject(subject) {
+        document.getElementById('email-subject-input').value = subject;
+    }
+
+    async function sendEmailFromSidebar() {
+        const to      = document.getElementById('email-to-input').value.trim();
+        const cc      = document.getElementById('email-cc-input').value.trim();
+        const subject = document.getElementById('email-subject-input').value.trim();
+        const body    = document.getElementById('email-body-input').value.trim();
+        const result  = document.getElementById('email-send-result');
+        const btn     = document.getElementById('email-send-btn');
+
+        if (!to) { result.style.color='var(--danger)'; result.textContent='Please enter a recipient.'; return; }
+        if (!subject) { result.style.color='var(--danger)'; result.textContent='Please enter a subject.'; return; }
+        if (!body) { result.style.color='var(--danger)'; result.textContent='Please write a message.'; return; }
+
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+        result.style.color = 'var(--text-muted)';
+        result.textContent = '⏳ Sending...';
+
+        try {
+            const res = await fetch('/api/tools/send_email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ to, subject, body, cc })
+            });
+            const data = await res.json();
+            if (data.error) {
+                result.style.color = 'var(--danger)';
+                result.textContent = data.error;
+            } else {
+                result.style.color = 'var(--success)';
+                result.textContent = data.message || '✅ Sent!';
+                // Clear form on success
+                document.getElementById('email-to-input').value = '';
+                document.getElementById('email-cc-input').value = '';
+                document.getElementById('email-subject-input').value = '';
+                document.getElementById('email-body-input').value = '';
+            }
+        } catch(e) {
+            result.style.color = 'var(--danger)';
+            result.textContent = '❌ Failed: ' + e;
+        }
+        btn.textContent = 'Send Email ↗';
+        btn.disabled = false;
+    }
 
     // ── Flashcards ─────────────────────────────────────────────────
 

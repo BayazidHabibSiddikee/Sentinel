@@ -1,6 +1,8 @@
-# Marin Kitagawa — AI Study Partner
+# Sentinel — AI Academic Weapon for RUET Students 👑🔥
 
-A self-hosted AI study companion with dual personalities (HS-02 Standard / HS-04 Evil), RAG, PDF viewer, multi-agent tools, and structured learning modes.
+> *"Understand the system. Master the material. Crush the exam. Conquer RUET."*
+
+An AI-powered academic platform built for **Rajshahi University of Engineering & Technology (RUET)** students. Sentinel is a ruthlessly intelligent study enforcer that transforms your course materials into a personalized, conversational knowledge base — and makes sure you actually use it.
 
 Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGraph.
 
@@ -9,6 +11,9 @@ Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGra
 ## Table of Contents
 
 - [Overview](#overview)
+- [The Problem](#the-problem)
+- [The Solution](#the-solution)
+- [How AI is Used](#how-ai-is-used)
 - [Architecture](#architecture)
 - [Features](#features)
 - [Setup](#setup)
@@ -16,6 +21,8 @@ Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGra
 - [API Reference](#api-reference)
 - [File Structure](#file-structure)
 - [How It Works](#how-it-works)
+- [Built With](#built-with)
+- [Submission](#submission)
 - [License](#license)
 
 ---
@@ -30,28 +37,66 @@ Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGra
 
 ![Settings View](static/images/screenshots/settings_view.png)
 
-![Settings - Providers configuration](assets/settings_providers.png)
-
-![Settings - Deep Mode Fallback Chain models](assets/settings_models.png)
+---
 
 ## Overview
 
-Marin Kitagawa is a personal AI study partner with two modes:
+**Sentinel** is a self-hosted, AI-powered academic platform that solves the most frustrating parts of student life at RUET:
 
-- **HS-04 (Evil Mode)** — Ruthless, dominant, British-slang-wielding mentor. Punishes laziness, weaponizes disappointment.
-- **HS-02 (Standard Mode)** — Warm, nurturing, encouraging teacher. Praise-driven, gentle correction.
+- Scattered course materials across drives, WhatsApp, and Telegram groups
+- No smart way to prepare for exams from your own lecture slides
+- Assignments with no guided explanation — just a blank page
+- No personalized feedback on what YOU specifically need to study next
 
-She's designed to keep you focused, test your knowledge, and help you learn faster through:
+Sentinel gives every RUET student their own relentless AI academic enforcer — one that knows your syllabus, reads your books, drills you on past questions, and refuses to let you coast.
 
-- **RAG (Retrieval-Augmented Generation)** — drop textbooks into `books/` and she retrieves relevant knowledge during conversations
-- **PDF Viewer** — read PDFs directly in the library with PDF.js rendering, text selection, page navigation, and reading color customizer
-- **Library Tools** — web search, PDF download, quiz generation, translation, and repo analysis built into the library sidebar
-- **Multi-agent tool pipeline** — LangGraph orchestrates background tools before she responds
-- **Structured learning modes** — "Teacher", "Coder", "Lab Report" output modes
+---
 
-**Default LLM:** `google/gemma-2-9b-it:free` via OpenRouter (free tier)
-**Embedding model:** `all-MiniLM-L6-v2` (local, via FAISS)
-**Database:** PostgreSQL 15
+## The Problem
+
+RUET students juggle:
+- Multiple courses with dense lecture slides and textbooks
+- Class tests, sessional marks, and semester exams hitting simultaneously
+- Assignment submissions with no one to explain the underlying concepts
+- No centralized, intelligent access to their own study materials
+- Zero personalization — everyone gets the same resources, regardless of where they're struggling
+
+The result: surface-level cramming, last-minute panic, and wasted potential.
+
+---
+
+## The Solution
+
+Sentinel reimagines the RUET learning experience with AI at its core:
+
+| Feature | What It Does |
+|---------|-------------|
+| **AI Course Assistant** | Upload lecture slides → ask anything → get answers grounded in YOUR materials |
+| **Smart Exam Prep** | Upload notes → auto-generate study plan → drill practice questions → identify weak topics |
+| **Assignment Guidance** | Get targeted hints and concept explanations — never the direct answer |
+| **Question Bank Drilling** | Past RUET exam patterns analyzed, high-yield topics identified |
+| **Personalized Dashboard** | Sentinel analyzes your weak areas and tells you exactly what to study next |
+| **Conversational Knowledge Base** | All uploaded materials become searchable through a chat interface |
+
+---
+
+## How AI is Used
+
+Sentinel uses the **Gemini API** (via OpenRouter) as its core intelligence, with AI woven into every layer:
+
+- **RAG (Retrieval-Augmented Generation)**: Student uploads their textbooks and lecture notes. FAISS vector search + BM25 keyword matching retrieves the most relevant excerpts and injects them into every prompt — so answers are always grounded in the student's own materials, not generic internet knowledge.
+
+- **Intent Classification**: A lightweight classifier detects whether the student wants to learn a concept (`learn`), get code help (`code`), write a lab report (`lab`), or just chat. Each intent routes to a specialized structured output mode.
+
+- **Structured Learning Modes**: The AI produces structured JSON output in Teacher, Coder, or Lab Report format — not just a chat bubble, but a formatted card with concept → explanation → math → takeaways.
+
+- **Exam Preparation Engine**: Sentinel identifies high-yield topics from uploaded syllabi, generates rapid-fire practice questions, critiques answers, and builds a personalized study schedule.
+
+- **Assignment Drill**: The AI uses Socratic questioning — it never gives the answer directly. It exposes the gap in the student's understanding and guides them to the solution through targeted hints.
+
+- **Multi-Agent Tool Pipeline**: LangGraph orchestrates background tools (web search, PDF download, YouTube transcript, repo analysis) before the LLM responds — so the AI always has the most current, relevant context.
+
+- **User Vault**: The AI extracts facts about the student (their weak topics, study habits, deadlines) and stores them in a persistent knowledge vault, enabling genuinely personalized recommendations over time.
 
 ---
 
@@ -76,13 +121,14 @@ She's designed to keep you focused, test your knowledge, and help you learn fast
          │                                   │
 ┌────────▼──────────┐            ┌───────────▼───────────┐
 │    marin.py        │            │   rag_server.py        │
-│  ┌──────────────┐  │            │   (FastAPI :5091)     │
-│  │ Preprocessor  │  │   HTTP     │  ┌────────────────┐  │
-│  │ (RAG+Page)   │  │────────────│  │ FAISS Index     │  │
-│  └──────┬───────┘  │            │  │ books/          │  │
-│  ┌──────▼───────┐  │            │  │ Hybrid Search   │  │
-│  │ Persona      │  │            │  └────────────────┘  │
-│  │ (Streaming)  │  │            └──────────────────────┘
+│  (Sentinel Core)  │            │   (FastAPI :5091)     │
+│  ┌──────────────┐  │   HTTP     │  ┌────────────────┐  │
+│  │ Preprocessor  │  │────────────│  │ FAISS Index     │  │
+│  │ (RAG+Page)   │  │            │  │ books/          │  │
+│  └──────┬───────┘  │            │  │ Hybrid Search   │  │
+│  ┌──────▼───────┐  │            │  └────────────────┘  │
+│  │ Persona      │  │            └──────────────────────┘
+│  │ (Streaming)  │  │
 │  └──────────────┘  │
 └────────────────────┘
          │
@@ -101,54 +147,54 @@ She's designed to keep you focused, test your knowledge, and help you learn fast
 
 ## Features
 
-### Dual Personality System
+### Sentinel Persona — RUET-FORGE-01 👑🔥
 
-| Mode | Designation | Tone | Tag |
-|------|-------------|------|-----|
-| Evil | HS-04 | Sharp, cold, darkly sarcastic, British slang | 👑🔥 |
-| Standard | HS-02 | Warm, encouraging, gently firm | 🌸✨ |
+Sentinel is a cold, relentless academic enforcer tuned specifically for RUET students:
 
-Toggle between modes from the library or chat sidebar. Each mode has its own character prompt, reading colors, and avatar.
+- References RUET realities: semester exams, class tests, sessional marks, departmental projects
+- Switches to **Exam Battle Mode** when a test is approaching — drills high-yield topics, generates practice questions, enforces study schedules
+- Uses **Assignment Drill mode** — Socratic questioning, targeted hints, never direct answers
+- Tracks deadlines and weaponizes accountability
+- Dark, cutting academic tone with British slang for slackers
 
 ### Landing Page
 
-Bold, atmospheric gateway. Toggle between Standard and Evil mode, then launch into Chat or Library ("Enter Forge").
+Bold, atmospheric gateway. Enter your name, set your study preferences, and launch into the Forge.
 
 ### Core Chat
 
 - Streaming responses with real-time token delivery
-- Vibe detection (lovely, flirty, angry, sad, excited, playful, neutral)
-- Intent classification (chat, image generation, learn, code, lab)
+- Vibe detection (lovely, flirty, angry, sad, excited, playful, neutral) — tuned for academic contexts
+- Intent classification: chat, image generation, learn, code, lab
 - Chat history persisted in PostgreSQL
-- RAG context injection — relevant excerpts from your books injected into prompts
-- Page-aware context — when reading a PDF, Marin gets the current page text
+- RAG context injection — relevant excerpts from YOUR books injected into every prompt
+- Page-aware context — when reading a PDF, Sentinel gets the current page text
 
 ### Library & PDF Viewer
 
 - **PDF.js rendering** — browser-native PDF display with text selection
 - **Page navigation** — editable page number input, prev/next buttons, zoom controls
-- **Reading color customizer** — customizable background/text/highlight colors with presets (evil, warm, paper, etc.)
-- **Theme-aware selection** — text selection color matches the current theme
+- **Reading color customizer** — customizable background/text/highlight colors
 - **RAG progress indicator** — pulsing dot + percentage bar when indexing new files
 - **Document management** — upload, delete, open documents from the sidebar
 
 ### Library Tools
 
-Built into the library sidebar — compact `[input] [button]` rows:
+Built into the library sidebar:
 
 | Tool | Description |
 |------|-------------|
 | **Repo/Link** | Analyze GitHub repos and URLs |
-| **Quiz** | Generate a quiz on any topic |
+| **Quiz** | Generate a quiz on any topic (perfect for RUET exam prep) |
 | **Translate** | Translate text (9 languages) |
 | **Web Search** | DuckDuckGo search |
 | **PDF Download** | Download PDFs directly to `books/` with auto-RAG indexing |
 
-Tools auto-send results to Marin so she responds about them in chat.
+Tools auto-send results to Sentinel so she responds about them in chat.
 
 ### RAG (Retrieval-Augmented Generation)
 
-- Drop files into `books/` directory
+- Drop files into `books/` directory — your lecture slides, textbooks, past papers
 - Auto-indexed on startup and after each upload
 - Supports: PDF (with OCR fallback), DOCX, TXT, MD, PY, C/CPP/H
 - Hybrid search: FAISS vector similarity + BM25 keyword search + cross-encoder re-ranking
@@ -156,6 +202,8 @@ Tools auto-send results to Marin so she responds about them in chat.
 - Progress tracking — real-time indexing status via `/index_progress` endpoint
 
 ### Structured Output Modes
+
+Triggered automatically when Sentinel detects academic intent:
 
 - **Teacher Mode** (`learn`): concept → explanation → math → takeaways
 - **Coder Mode** (`code`): language → snippet → explanation → dependencies
@@ -165,7 +213,7 @@ Tools auto-send results to Marin so she responds about them in chat.
 
 - **Flashcards**: SuperMemo-2 spaced repetition (quality 0-5)
 - **Pomodoro Timer**: Focus session tracking
-- **Quiz Generator**: Multiple-choice quizzes with explanations
+- **Quiz Generator**: Multiple-choice quizzes with explanations — grounded in your uploaded materials
 - **Study Stats**: Total focus time by topic
 
 ### Proactive Accountability Engine
@@ -173,6 +221,7 @@ Tools auto-send results to Marin so she responds about them in chat.
 - Monitors idle time: 20min → 2hr → 5hr → 48hr escalation
 - Respects quiet hours (12:00 AM – 7:30 AM)
 - SSE broadcast to connected clients
+- Sentinel will come for you if you go quiet too long
 
 ---
 
@@ -226,17 +275,17 @@ python3 main.py             # starts on :5090
 ### First Run
 
 1. Open `http://localhost:5090`
-2. Onboarding wizard — enter your name, study topics, personality preferences
+2. Onboarding wizard — enter your name, RUET department, study topics
 3. Enter your **OpenRouter API key**
-4. Click **Initialize** — you're ready to chat
+4. Click **Initialize** — Sentinel is ready to forge you
 
 ### Adding Study Materials
 
 ```bash
-# Textbooks, notes, PDFs — goes to books/
-cp ~/Downloads/textbook.pdf books/
-cp ~/Notes/lecture-notes.docx books/
-
+# Drop your RUET textbooks, lecture slides, past papers into books/
+cp ~/Downloads/signals_and_systems.pdf books/
+cp ~/Notes/control_systems_lecture.docx books/
+cp ~/Downloads/past_questions_EEE.pdf books/
 ```
 
 Files are automatically indexed on server startup. To re-index after adding new files:
@@ -282,7 +331,7 @@ Or use the **PDF Download** tool in the library — it downloads and auto-indexe
 |--------|----------|-------------|
 | `POST` | `/api/chat` | Send message. Form fields: `message`, `theme`, `document`, `page`. Returns streaming response. |
 | `GET` | `/api/chat/history` | Get chat history (last 50 messages). |
-| `POST` | `/api/chat/context` | Save tool context for Marin. JSON: `{tool, result}`. |
+| `POST` | `/api/chat/context` | Save tool context for Sentinel. JSON: `{tool, result}`. |
 
 ### Settings
 
@@ -323,9 +372,9 @@ Or use the **PDF Download** tool in the library — it downloads and auto-indexe
 ## File Structure
 
 ```
-marin-kitaga wa/
+sentinel/
 ├── main.py                 # FastAPI entry — all HTTP endpoints
-├── marin.py                # Core AI — persona, preprocessor, streaming
+├── marin.py                # Core AI — Sentinel persona, preprocessor, streaming
 ├── config.py               # Shared constants — model names, paths, limits
 ├── database.py             # PostgreSQL interface — 6 tables
 ├── classifier.py           # Regex intent/vibe classifier
@@ -340,7 +389,7 @@ marin-kitaga wa/
 │   ├── web_search.py       # DuckDuckGo search
 │   ├── pdf_downloader.py   # PDF download → books/ + RAG index
 │   ├── repo_analyzer.py    # GitHub repo / webpage analysis
-│   ├── quiz_generator.py   # Quiz generation
+│   ├── quiz_generator.py   # Quiz generation (RUET exam style)
 │   ├── translate.py        # Translation (9 languages)
 │   ├── doc_tools.py        # PDF/Word conversion
 │   ├── image_tool.py       # Image generation
@@ -359,7 +408,7 @@ marin-kitaga wa/
 │   ├── uploads/            # User-uploaded images
 │   └── generated/          # AI-generated images
 │
-├── books/                  # Study materials (PDFs, notes) — RAG indexed
+├── books/                  # Study materials (PDFs, lecture slides, past papers) — RAG indexed
 
 ├── storage/
 │   └── faiss_db/           # FAISS index files
@@ -377,7 +426,7 @@ marin-kitaga wa/
 ### Input Processing Pipeline
 
 ```
-User types message
+RUET Student types message
        │
        ▼
 ┌──────────────┐
@@ -389,15 +438,16 @@ User types message
 │  Preprocessor │  Enriches prompt with context
 │  (marin.py)   │
 │  ┌──────────┐ │
-│  │ RAG      │ │  FAISS search → relevant excerpts
+│  │ RAG      │ │  FAISS search → relevant excerpts from student's books
 │  │ Page     │ │  If PDF open → current page text
 │  └──────────┘ │
 └──────┬───────┘
        │
        ▼
 ┌──────────────┐
-│  Persona      │  System prompt + vibe modifier + RAG instruction
-│  (Streaming)  │  Last 30 messages from PostgreSQL
+│  Sentinel     │  RUET-FORGE-01 persona + vibe modifier + RAG instruction
+│  Persona      │  Last 30 messages from PostgreSQL
+│  (Streaming)  │
 └──────┬───────┘
        │
        ▼
@@ -407,13 +457,72 @@ User types message
 └──────────────┘
 ```
 
-### Response Cleanup
+### Exam Preparation Flow
 
-A `clean_response()` function strips any remaining:
-- Emoji protocol headers (e.g. `[HS-04 // FORGE PROTOCOL]`)
-- Signatures (e.g. `— Marin EQ`)
+```
+Student: "I have my Control Systems exam in 3 days"
+       │
+       ▼
+Sentinel identifies high-yield topics from uploaded syllabus
+       │
+       ▼
+Generates practice questions from past paper patterns
+       │
+       ▼
+Drills student on weak areas identified from conversation history
+       │
+       ▼
+Builds day-by-day study schedule. Enforces it.
+```
 
-This runs silently in the background — the character prompt doesn't need to mention these rules.
+### Assignment Guidance Flow
+
+```
+Student: "I don't understand this assignment question"
+       │
+       ▼
+Sentinel reads the question context (via RAG or direct input)
+       │
+       ▼
+Identifies the underlying concept gap
+       │
+       ▼
+Guides with targeted hints and Socratic questions
+       │
+       ▼
+Student arrives at the answer themselves. Learning happens.
+```
+
+---
+
+## Built With
+
+- **Gemini API** (via OpenRouter) — Core LLM intelligence
+- **Google AI Studio** — Model testing and prompt engineering
+- **LangChain** — LLM abstraction, message formatting
+- **LangGraph** — Multi-agent tool pipeline orchestration
+- **FAISS** — Vector similarity search for RAG
+- **FastAPI** — Backend API server
+- **PostgreSQL 15** — Persistent storage (chat history, user vault, state)
+- **PDF.js** — Browser-native PDF rendering
+- **sentence-transformers** — Local embedding model (`all-MiniLM-L6-v2`)
+- **Google Cloud / Cloud Run** — Deployment target
+
+---
+
+## Submission
+
+**Project Name:** Sentinel
+
+**Tagline:** *Your AI academic weapon for RUET — cold, ruthless, and relentlessly on your side.*
+
+**Problem:** RUET students have no intelligent, personalized way to interact with their own course materials. Studying is scattered, exam prep is generic, and assignments give no guided learning.
+
+**Solution:** Sentinel — an AI-powered platform where students upload their own lecture slides, textbooks, and past papers, then get personalized exam prep, assignment guidance, and a conversational knowledge base powered by RAG and Gemini.
+
+**Gemini Usage:** Gemini powers the core chat intelligence, structured learning modes (Teacher/Coder/Lab Report), exam question generation, and the user vault extraction that makes recommendations genuinely personalized over time.
+
+**GitHub:** https://github.com/BayazidHabibSiddikee/Marin_Evil_Sentinel
 
 ---
 

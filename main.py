@@ -140,6 +140,38 @@ async def get_settings():
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     return response
 
+@app.get("/api/settings/email")
+async def get_email_settings():
+    """Return the current email configuration (password is masked)."""
+    from tools.email_tool import get_contacts
+    return {
+        "email_sender":       database.get_state("EMAIL_SENDER", ""),
+        "email_password_set": bool(database.get_state("EMAIL_PASSWORD", "")),
+        "email_smtp_host":    database.get_state("EMAIL_SMTP_HOST", "smtp.gmail.com"),
+        "email_smtp_port":    database.get_state("EMAIL_SMTP_PORT", 587),
+        "email_display_name": database.get_state("EMAIL_DISPLAY_NAME", "Sentinel — RUET Study Platform"),
+        "contacts":           get_contacts(),
+    }
+
+@app.post("/api/settings/email")
+async def save_email_settings(request: Request):
+    """Save email configuration."""
+    from tools.email_tool import save_contacts
+    data = await request.json()
+    if data.get("email_sender") is not None:
+        database.set_state("EMAIL_SENDER", data["email_sender"])
+    if data.get("email_password"):
+        database.set_state("EMAIL_PASSWORD", data["email_password"])
+    if data.get("email_smtp_host") is not None:
+        database.set_state("EMAIL_SMTP_HOST", data["email_smtp_host"])
+    if data.get("email_smtp_port") is not None:
+        database.set_state("EMAIL_SMTP_PORT", int(data["email_smtp_port"]))
+    if data.get("email_display_name") is not None:
+        database.set_state("EMAIL_DISPLAY_NAME", data["email_display_name"])
+    if data.get("contacts") is not None:
+        save_contacts(data["contacts"])
+    return {"status": "success"}
+
 @app.post("/api/settings/avatar")
 async def upload_avatar(avatar: UploadFile = File(...)):
     ext = os.path.splitext(avatar.filename)[1].lower()
@@ -740,6 +772,62 @@ async def vault_delete(category: str, key: str):
 @app.get("/api/vault/search/{query}")
 async def vault_search(query: str):
     return {"results": database.vault_search(query)}
+
+
+# ── EMAIL TOOL ENDPOINT ──────────────────────────────────────────────────────
+class EmailRequest(BaseModel):
+    to: str
+    subject: str
+    body: str
+    cc: str = ""
+    reply_to: str = ""
+
+@app.post("/api/tools/send_email")
+async def send_email_endpoint(req: EmailRequest):
+    """
+    Send an email to a student, teacher, or any address.
+    Resolves contact names from the saved contact book automatically.
+    """
+    try:
+        from tools.email_tool import send_email, lookup_contact
+        import asyncio
+
+        # Resolve display name or email from contact book
+        to_addr = req.to.strip()
+        if "@" not in to_addr:
+            # Treat as a name — look it up in contacts
+            contact = lookup_contact(to_addr)
+            if contact:
+                to_addr = contact["email"]
+            else:
+                return {"error": f"Contact '{to_addr}' not found. Add them in Settings → Email → Contacts, or use a full email address."}
+
+        result = await asyncio.to_thread(
+            send_email, to_addr, req.subject, req.body, req.cc, req.reply_to
+        )
+        # Notify Sentinel so she knows what was sent
+        _notify_marin(f"Email sent to {to_addr}: Subject='{req.subject}'")
+        return {"message": result}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/tools/contacts")
+async def get_contacts_endpoint():
+    """Return the saved contact list for the email composer."""
+    from tools.email_tool import get_contacts
+    return {"contacts": get_contacts()}
+
+
+# ── ATTENDANCE APP (mounted under /attendance) ───────────────────────────────
+# RUET 3-2 Semester Attendance Tracker — served on the same server as Sentinel.
+# The attendance UI's API calls are prefixed with /attendance in its index.html,
+# so they route here and get stripped by the sub-application mount.
+try:
+    from attendance.main import app as attendance_app
+    app.mount("/attendance", attendance_app)
+except Exception as e:
+    print(f"[Attendance] Failed to mount attendance app: {e}")
 
 
 if __name__ == "__main__":
