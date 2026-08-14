@@ -1,0 +1,78 @@
+Challenge: Reimagine Learning at RUET
+Build the next generation of learning platforms for RUET students.
+RUET students rely on multiple sources for their academic life: course materials, class notes, assignments, notices, question banks, exam preparation, and communication with classmates and teachers.
+The challenge is to build an AI-powered platform that makes the academic experience at RUET simpler, smarter, and more personalized.
+Your solution could rethink how students:
+Access course materials
+Organize lecture notes
+Prepare for exams
+Practice questions
+Track assignments and deadlines
+Discover useful resources
+Ask questions about course content
+Learn difficult concepts
+Collaborate with classmates
+Get personalized academic recommendations
+AI is the differentiator
+Don't just build another LMS.
+Think about:
+What could an LMS do if AI was built into its core?
+For example:
+AI Course Assistant
+Upload course materials → ask questions → get answers grounded in the materials.
+Smart Exam Preparation
+Upload lecture slides → generate a study plan → practice questions → identify weak topics.
+AI Assignment Assistant
+Assignment posted → student receives explanations, hints, and personalized guidance without simply getting the answer.
+
+Course Knowledge Base
+All course materials become searchable through a conversational AI interface.
+Personalized Dashboard
+The system analyzes courses, deadlines, performance, and study activity to recommend what the student should focus on next.
+These are examples only. Participants are free to build their own interpretation.
+Challenge requirement
+Your project should:
+Address a real problem in the academic experience.
+Include a working prototype.
+Use AI meaningfully.
+Demonstrate how the solution could benefit RUET students.
+Suggested technologies
+Participants are encouraged to use:
+Gemini API
+Google AI Studio
+Google Antigravity
+Google Cloud
+Cloud Run
+Other technologies are allowed.
+
+The goal
+You don't need to build a complete LMS in three hours.
+Pick one frustrating part of student life and rethink it with AI.
+Submission Guidelines
+Submit your project through Devpost before the 4:30 PM deadline.
+Your submission should include:
+Project Name
+Give your project a clear and memorable name.
+Tagline
+Describe your project in one sentence.
+Project Description
+Briefly explain:
+The problem you are solving
+Your solution
+How it works
+How AI/Gemini is used
+Demo Video (Optional)
+Submit a maximum 2-minute video demonstrating your working project. Don’t need to edit or anything. Just a screen record will be enough.
+Your video should clearly show:
+The problem
+Your solution
+The main features
+Gemini/AI functionality, if used
+Source Code
+Provide a link to your GitHub repository. Make sure the repository is accessible to the judges.
+Built With
+List the main technologies, frameworks, APIs, and tools used in your project.
+Gemini Usage
+Explain how Gemini is used in your project and why it is important to your solution.
+Live Demo
+If your project is deployed, provide the live demo URL. It would be best if you can.

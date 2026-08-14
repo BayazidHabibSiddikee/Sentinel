@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUET 3-2 Semester Dashboard</title>
+<style>
+:root {
+  --primary: #1e3a8a;
+  --primary-dark: #1e1b4b;
+  --secondary: #7c3aed;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --light: #f8fafc;
+  --dark: #0f172a;
+  --border: #e2e8f0;
+  --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: var(--dark);
+}
+.container { max-width:1400px; margin:0 auto; padding:20px; }
+
+/* Header */
+header {
+  background: white;
+  box-shadow: 0 4px 6px var(--shadow);
+  padding: 20px 0;
+  margin-bottom: 25px;
+  border-radius: 12px;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.logo-text h1 { color: var(--primary); font-size:1.8rem; font-weight:700; }
+.logo-text p { color: var(--secondary); font-size:0.9rem; }
+.mission-badge {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Navigation */
+nav {
+  background: white;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 4px var(--shadow);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+nav a {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+nav a:hover { background: var(--primary); color: white; }
+nav a.active {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 6px var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.5s ease;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border);
+}
+.card-header h2 { font-size:1.3rem; color: var(--primary); }
+.card-icon {
+  width:50px; height:50px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+}
+.icon-attendance { background: linear-gradient(135deg,#10b981,#059669); color:white; }
+.icon-courses    { background: linear-gradient(135deg,#3b82f6,#2563eb); color:white; }
+.icon-marks      { background: linear-gradient(135deg,#8b5cf6,#7c3aed); color:white; }
+.icon-routine    { background: linear-gradient(135deg,#ef4444,#dc2626); color:white; }
+.icon-resources  { background: linear-gradient(135deg,#10b981,#059669); color:white; }
+
+/* Dashboard grid */
+.dashboard { display:grid; grid-template-columns: repeat(auto-fit,minmax(340px,1fr)); gap:25px; margin-bottom:25px; }
+.main-content { display:grid; grid-template-columns:2fr 1fr; gap:25px; }
+@media(max-width:900px) { .main-content { grid-template-columns:1fr; } }
+
+/* Stats */
+.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:15px; }
+.stat-item { text-align:center; padding:15px; background:var(--light); border-radius:10px; }
+.stat-value { font-size:1.8rem; font-weight:700; color:var(--primary); }
+.stat-label { font-size:0.85rem; color:#64748b; margin-top:5px; }
+.stat-value.success { color:var(--success); }
+.stat-value.danger  { color:var(--danger); }
+.stat-value.warning { color:var(--warning); }
+
+/* Progress */
+.progress-container { margin-top:20px; }
+.progress-label { display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem; color:#64748b; }
+.progress-bar { height:12px; background:var(--border); border-radius:6px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--secondary)); border-radius:6px; transition:width 0.5s; }
+.progress-fill.success { background:linear-gradient(90deg,var(--success),#059669); }
+.progress-fill.danger  { background:linear-gradient(90deg,var(--danger),#dc2626); }
+.progress-fill.warning { background:linear-gradient(90deg,var(--warning),#d97706); }
+
+/* Buttons */
+button {
+  padding:10px 20px; border:none; border-radius:8px;
+  font-weight:500; cursor:pointer; transition:all 0.3s; font-size:0.9rem;
+}
+.btn-primary  { background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; }
+.btn-success  { background:var(--success); color:white; }
+.btn-danger   { background:var(--danger);  color:white; }
+.btn-warning  { background:var(--warning); color:white; }
+.btn-info     { background:var(--info);    color:white; }
+.btn-sm       { padding:6px 12px; font-size:0.8rem; }
+button:hover  { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+
+/* Forms */
+.form-group { margin-bottom:15px; }
+.form-group label { display:block; margin-bottom:5px; font-weight:500; }
+.form-group input, .form-group select {
+  width:100%; padding:12px; border:2px solid var(--border);
+  border-radius:8px; font-size:1rem; transition:border-color 0.3s;
+}
+.form-group input:focus, .form-group select:focus { outline:none; border-color:var(--primary); }
+.form-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; }
+
+/* Tables */
+.data-table { width:100%; border-collapse:collapse; margin-top:15px; font-size:0.9rem; }
+.data-table th, .data-table td { padding:10px 12px; text-align:left; border:1px solid var(--border); }
+.data-table th { background:var(--primary); color:white; font-weight:600; }
+.data-table tr:nth-child(even) { background:var(--light); }
+.data-table tr:hover { background:#e2e8f0; }
+.data-table td.center { text-align:center; }
+.cell-empty { background:#f1f5f9; color:#94a3b8; text-align:center; }
+
+/* Course list */
+.course-list { display:grid; gap:12px; }
+.course-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px; background:var(--light); border-radius:10px; transition:all 0.3s;
+}
+.course-item:hover { background:#e2e8f0; transform:translateX(5px); }
+.course-code { font-weight:600; color:var(--primary); }
+.course-name { font-size:0.9rem; color:#64748b; }
+.course-credits {
+  background:var(--primary); color:white;
+  padding:4px 12px; border-radius:20px; font-size:0.8rem; white-space:nowrap;
+}
+
+/* Resources */
+.resources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
+.resource-card {
+  background:var(--light); padding:16px; border-radius:10px;
+  cursor:pointer; transition:all 0.3s; border:2px solid transparent;
+  text-align:left; width:100%;
+}
+.resource-card:hover { transform:translateY(-3px); box-shadow:0 6px 16px var(--shadow); border-color:var(--primary); background:white; }
+.resource-icon { font-size:1.8rem; margin-bottom:8px; }
+.resource-title { font-weight:600; color:var(--dark); margin-bottom:4px; font-size:0.95rem; }
+.resource-desc  { font-size:0.8rem; color:#64748b; }
+.resource-size  { font-size:0.75rem; color:#94a3b8; margin-top:4px; }
+
+/* File list inside cards */
+.file-list { display:grid; gap:8px; max-height:350px; overflow-y:auto; }
+.file-item {
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  background:var(--light); border-radius:8px; cursor:pointer;
+  transition:all 0.2s; border:1px solid transparent;
+}
+.file-item:hover { background:white; border-color:var(--primary); box-shadow:0 2px 8px var(--shadow); }
+.file-item-icon { font-size:1.3rem; flex-shrink:0; }
+.file-item-info { flex:1; min-width:0; }
+.file-item-name { font-weight:500; font-size:0.88rem; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.file-item-meta { font-size:0.75rem; color:#94a3b8; }
+
+/* Tabs inside sections */
+.tab-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.tab-btn { padding:8px 18px; border-radius:20px; border:2px solid var(--border); background:white; color:#64748b; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
+.tab-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+
+/* Alerts */
+.alert { padding:14px 18px; border-radius:10px; margin-bottom:16px; display:flex; align-items:flex-start; gap:10px; }
+.alert-success { background:#d1fae5; border-left:4px solid var(--success); color:#065f46; }
+.alert-warning { background:#fef3c7; border-left:4px solid var(--warning); color:#92400e; }
+.alert-danger  { background:#fee2e2; border-left:4px solid var(--danger);  color:#991b1b; }
+.alert-info    { background:#dbeafe; border-left:4px solid var(--info);    color:#1e40af; }
+
+/* Modal */
+.modal {
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.55); z-index:1000; align-items:center; justify-content:center;
+}
+.modal.active { display:flex; }
+.modal-content {
+  background:white; padding:30px; border-radius:16px;
+  max-width:600px; width:90%; max-height:85vh; overflow-y:auto;
+}
+.modal-header {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:20px; padding-bottom:15px; border-bottom:2px solid var(--border);
+}
+.modal-header h2 { font-size:1.2rem; color:var(--primary); }
+.modal-close { background:none; border:none; font-size:1.6rem; cursor:pointer; color:#64748b; padding:4px; line-height:1; }
+.modal-close:hover { color:var(--danger); transform:none; box-shadow:none; }
+
+/* Attendance section */
+.att-section { background:white; border-radius:16px; padding:25px; box-shadow:0 4px 6px var(--shadow); }
+.att-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.att-actions { display:flex; gap:10px; }
+
+/* Toast */
+#toast {
+  position:fixed; bottom:30px; right:30px; background:#1e293b; color:white;
+  padding:14px 22px; border-radius:10px; font-size:0.9rem;
+  opacity:0; transition:opacity 0.3s; z-index:9999; pointer-events:none;
+}
+#toast.show { opacity:1; }
+
+/* Loading spinner */
+.spinner {
+  border:4px solid var(--border); border-top:4px solid var(--primary);
+  border-radius:50%; width:36px; height:36px;
+  animation:spin 0.8s linear infinite; margin:30px auto 10px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+/* Footer */
+footer { text-align:center; padding:20px; color:white; font-size:0.9rem; margin-top:30px; }
+
+@media(max-width:768px) {
+  .header-content { flex-direction:column; gap:15px; }
+  .stats-grid { grid-template-columns:1fr; }
+  .main-content { grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<div id="toast"></div>
+
+<header>
+  <div class="header-content">
+    <div class="logo-text">
+      <h1>🎓 RUET 3-2 Semester Dashboard</h1>
+      <p>Mechatronics Engineering | 22 Series | GPA 4.00 Mission</p>
+    </div>
+    <div class="mission-badge">🎯 MISSION: GPA 4.00</div>
+  </div>
+</header>
+
+<div class="container">
+  <nav>
+    <a onclick="showSection('dashboard', this)" class="active">🏠 Dashboard</a>
+    <a onclick="showSection('attendance', this)">📅 Attendance</a>
+    <a onclick="showSection('routine', this)">⏰ Routine</a>
+    <a onclick="showSection('courses', this)">📚 Courses</a>
+    <a onclick="showSection('marks', this)">📊 Marks</a>
+    <a onclick="showSection('resources', this)">📂 Resources</a>
+  </nav>
+
+  <!-- ═══════════════ DASHBOARD ═══════════════ -->
+  <div id="dashboard-section">
+    <div class="dashboard">
+
+      <!-- Attendance Stats -->
+      <div class="card">
+        <div class="card-header">
+          <h2>📅 Attendance Status</h2>
+          <div class="card-icon icon-attendance">📊</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-value" id="present-days">-</div><div class="stat-label">Present Days</div></div>
+          <div class="stat-item"><div class="stat-value" id="absent-days">-</div><div class="stat-label">Absent Days</div></div>
+          <div class="stat-item"><div class="stat-value" id="current-pct">-</div><div class="stat-label">Current %</div></div>
+          <div class="stat-item"><div class="stat-value">90%</div><div class="stat-label">Target %</div></div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-label"><span>Progress to 90%</span><span id="progress-text">0%</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-bar" style="width:0%"></div></div>
+        </div>
+        <div id="att-warning" style="margin-top:15px;"></div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2>⚡ Quick Actions</h2>
+          <div class="card-icon icon-courses">⚡</div>
+        </div>
+        <div style="display:grid;gap:12px;">
+          <button class="btn-primary" onclick="openModal('today-att')" style="width:100%">✅ Mark Today's Attendance</button>
+          <button class="btn-success" onclick="openModal('add-att')" style="width:100%">📅 Add Custom Date</button>
+          <button class="btn-warning" onclick="openModal('update-marks')" style="width:100%">📊 Update Marks</button>
+          <button class="btn-info"    onclick="showSection('resources', null)" style="width:100%">📂 Open Study Files</button>
+        </div>
+      </div>
+
+      <!-- Today's Classes -->
+      <div class="card">
+        <div class="card-header">
+          <h2>🕐 Today's Classes</h2>
+          <div class="card-icon icon-routine">🕰️</div>
+        </div>
+        <div id="today-classes"><div class="spinner"></div></div>
+      </div>
+
+      <!-- GPA Estimate -->
+      <div class="card">
+        <div class="card-header">
+          <h2>📈 GPA Estimate</h2>
+          <div class="card-icon icon-marks">🎯</div>
+        </div>
+        <div id="gpa-estimate"><p style="text-align:center;color:#64748b;padding:20px;">No marks entered yet</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ATTENDANCE ═══════════════ -->
+  <div id="attendance-section" style="display:none;">
+    <div class="att-section">
+      <div class="att-header">
+        <h2>📅 Attendance Management</h2>
+        <div class="att-actions">
+          <button class="btn-primary" onclick="openModal('today-att')">Mark Today</button>
+          <button class="btn-success" onclick="openModal('add-att')">Add Date</button>
+        </div>
+      </div>
+      <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-item"><div class="stat-value" id="att-present">-</div><div class="stat-label">Present</div></div>
+        <div class="stat-item"><div class="stat-value" id="att-absent">-</div><div class="stat-label">Absent</div></div>
+        <div class="stat-item"><div class="stat-value" id="att-holiday">-</div><div class="stat-label">Holiday</div></div>
+        <div class="stat-item"><div class="stat-value" id="att-total">-</div><div class="stat-label">Recorded</div></div>
+      </div>
+      <div id="att-records"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ROUTINE ═══════════════ -->
+  <div id="routine-section" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <h2>⏰ Class Routine — 3-2 Semester</h2>
+        <div class="card-icon icon-routine">⏰</div>
+      </div>
+      <div id="routine-table" style="overflow-x:auto;"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ COURSES ═══════════════ -->
+  <div id="courses-section" style="display:none;">
+    <div class="main-content">
+      <div class="card">
+        <div class="card-header"><h2>📚 Theory Courses</h2><div class="card-icon icon-courses">📚</div></div>
+        <div id="theory-courses"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>🔬 Sessional Courses</h2><div class="card-icon icon-courses">🔬</div></div>
+        <div id="sessional-courses"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MARKS ═══════════════ -->
+  <div id="marks-section" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <h2>📊 Marks Management</h2>
+        <button class="btn-primary btn-sm" onclick="openModal('update-marks')">+ Add / Edit Marks</button>
+      </div>
+      <div id="marks-content"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RESOURCES ═══════════════ -->
+  <div id="resources-section" style="display:none;">
+    <div class="dashboard">
+
+      <!-- Quick PDFs -->
+      <div class="card">
+        <div class="card-header"><h2>📋 Quick Links</h2><div class="card-icon icon-resources">🔗</div></div>
+        <div class="resources-grid" id="quick-links-grid"></div>
+      </div>
+
+      <!-- Course Files -->
+      <div class="card" style="grid-column:1/-1;">
+        <div class="card-header"><h2>📚 Course Study Materials</h2><div class="card-icon icon-resources">📚</div></div>
+        <div class="tab-bar" id="course-tabs"></div>
+        <div id="course-file-panes"></div>
+      </div>
+
+      <!-- Question Papers -->
+      <div class="card">
+        <div class="card-header"><h2>📋 Question Papers</h2><div class="card-icon icon-resources">📋</div></div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchQTab('prev',this)">Previous Year</button>
+          <button class="tab-btn" onclick="switchQTab('final',this)">Semester Final</button>
+        </div>
+        <div id="q-prev" class="tab-pane active"><div class="file-list" id="qfiles-prev"></div></div>
+        <div id="q-final" class="tab-pane"><div class="file-list" id="qfiles-final"></div></div>
+      </div>
+
+      <!-- Assignments -->
+      <div class="card">
+        <div class="card-header"><h2>📝 Assignments</h2><div class="card-icon icon-resources">📝</div></div>
+        <div class="file-list" id="assign-files"></div>
+      </div>
+
+      <!-- Sessionals -->
+      <div class="card">
+        <div class="card-header"><h2>🔬 Sessional Lab Reports</h2><div class="card-icon icon-resources">🔬</div></div>
+        <div class="file-list" id="sessional-files"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+
+<!-- Mark Today -->
+<div id="today-att-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Mark Today's Attendance</h2>
+      <button class="modal-close" onclick="closeModal('today-att')">×</button>
+    </div>
+    <form id="today-att-form" onsubmit="submitAttendance(event,'today-att')">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="today-att-date" required>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="today-att-status" required onchange="toggleCourses('today-att')">
+          <option value="">Select Status</option>
+          <option value="present">Present</option>
+          <option value="absent">Absent</option>
+          <option value="holiday">Holiday</option>
+        </select>
+      </div>
+      <div class="form-group" id="today-att-courses-wrap" style="display:none;">
+        <label>Courses Attended (optional, Ctrl+click for multiple)</label>
+        <select id="today-att-courses" multiple style="height:150px;">
+          <option value="MTE 3201">MTE 3201 — Power Electronics and Drives</option>
+          <option value="MTE 3205">MTE 3205 — Hydraulic and Pneumatic Control</option>
+          <option value="ME 3255">ME 3255 — Machine Dynamics and Vibrations</option>
+          <option value="ME 3265">ME 3265 — Fluid Mechanics and Machinery</option>
+          <option value="EEE 3287">EEE 3287 — Network and Communication Systems</option>
+          <option value="MTE 3200">MTE 3200 — Mechatronics Case Study</option>
+          <option value="MTE 3202">MTE 3202 — Power Electronics Sessional</option>
+          <option value="MTE 3206">MTE 3206 — Hydraulic and Pneumatic Sessional</option>
+          <option value="ME 3256">ME 3256 — Machine Dynamics Sessional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <input type="text" id="today-att-notes" placeholder="Any notes...">
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%">Mark Attendance</button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Custom Date -->
+<div id="add-att-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Add Attendance Record</h2>
+      <button class="modal-close" onclick="closeModal('add-att')">×</button>
+    </div>
+    <form id="add-att-form" onsubmit="submitAttendance(event,'add-att')">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="add-att-date" required>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="add-att-status" required onchange="toggleCourses('add-att')">
+          <option value="">Select Status</option>
+          <option value="present">Present</option>
+          <option value="absent">Absent</option>
+          <option value="holiday">Holiday</option>
+        </select>
+      </div>
+      <div class="form-group" id="add-att-courses-wrap" style="display:none;">
+        <label>Courses Attended (optional)</label>
+        <select id="add-att-courses" multiple style="height:150px;">
+          <option value="MTE 3201">MTE 3201 — Power Electronics and Drives</option>
+          <option value="MTE 3205">MTE 3205 — Hydraulic and Pneumatic Control</option>
+          <option value="ME 3255">ME 3255 — Machine Dynamics and Vibrations</option>
+          <option value="ME 3265">ME 3265 — Fluid Mechanics and Machinery</option>
+          <option value="EEE 3287">EEE 3287 — Network and Communication Systems</option>
+          <option value="MTE 3200">MTE 3200 — Mechatronics Case Study</option>
+          <option value="MTE 3202">MTE 3202 — Power Electronics Sessional</option>
+          <option value="MTE 3206">MTE 3206 — Hydraulic and Pneumatic Sessional</option>
+          <option value="ME 3256">ME 3256 — Machine Dynamics Sessional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <input type="text" id="add-att-notes" placeholder="Any notes...">
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%">Add Record</button>
+    </form>
+  </div>
+</div>
+
+<!-- Update Marks -->
+<div id="update-marks-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Update Marks</h2>
+      <button class="modal-close" onclick="closeModal('update-marks')">×</button>
+    </div>
+    <form id="update-marks-form" onsubmit="submitMarks(event)">
+      <div class="form-group">
+        <label>Course</label>
+        <select id="marks-course" required>
+          <option value="">Select Course</option>
+          <option value="MTE 3201">MTE 3201 — Power Electronics and Drives</option>
+          <option value="MTE 3205">MTE 3205 — Hydraulic and Pneumatic Control</option>
+          <option value="ME 3255">ME 3255 — Machine Dynamics and Vibrations</option>
+          <option value="ME 3265">ME 3265 — Fluid Mechanics and Machinery</option>
+          <option value="EEE 3287">EEE 3287 — Network and Communication Systems</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>CT 1 (max 5)</label><input type="number" id="m-ct1" min="0" max="5" step="0.1" placeholder="0–5"></div>
+        <div class="form-group"><label>CT 2 (max 5)</label><input type="number" id="m-ct2" min="0" max="5" step="0.1" placeholder="0–5"></div>
+        <div class="form-group"><label>CT 3 (max 5)</label><input type="number" id="m-ct3" min="0" max="5" step="0.1" placeholder="0–5"></div>
+        <div class="form-group"><label>CT 4 (max 5)</label><input type="number" id="m-ct4" min="0" max="5" step="0.1" placeholder="0–5"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Assignment (max 10)</label><input type="number" id="m-assignment" min="0" max="10" step="0.1" placeholder="0–10"></div>
+        <div class="form-group"><label>Attendance Marks (max 10)</label><input type="number" id="m-att-marks" min="0" max="10" step="0.1" placeholder="0–10"></div>
+        <div class="form-group"><label>Final Exam (max 60)</label><input type="number" id="m-final" min="0" max="60" step="0.1" placeholder="0–60"></div>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;margin-top:8px;">Save Marks</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>🎓 RUET Mechatronics Engineering | 22 Series | 3-2 Semester | GPA 4.00 Mission Dashboard</p>
+</footer>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let stats = {};
+let courses = { theory: [], sessional: [] };
+let semFiles = {};
+let coursesLoaded = false;
+
+// ── Utility ────────────────────────────────────────────────────────────────
+function toast(msg, ms = 3000) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), ms);
+}
+
+function today() {
+  return new Date().toISOString().substring(0, 10);
+}
+
+async function openFile(relPath) {
+  try {
+    const r = await fetch('/api/open-file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: relPath })
+    });
+    const d = await r.json();
+    if (r.ok) { toast('📂 Opened: ' + d.path.split('/').pop()); }
+    else { toast('❌ ' + (d.detail || 'Failed to open file')); }
+  } catch (e) {
+    toast('❌ Network error: ' + e.message);
+  }
+}
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+function showSection(name, el) {
+  document.querySelectorAll('[id$="-section"]').forEach(s => s.style.display = 'none');
+  document.getElementById(name + '-section').style.display = 'block';
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function openModal(id) {
+  const m = document.getElementById(id + '-modal');
+  m.classList.add('active');
+  if (id === 'today-att' || id === 'add-att') {
+    const dateEl = document.getElementById(id + '-date');
+    if (dateEl) dateEl.value = today();
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id + '-modal').classList.remove('active');
+  const form = document.getElementById(id + '-form');
+  if (form) form.reset();
+  // Hide course pickers on reset
+  ['today-att-courses-wrap', 'add-att-courses-wrap'].forEach(wid => {
+    const el = document.getElementById(wid);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function toggleCourses(prefix) {
+  const status = document.getElementById(prefix + '-status').value;
+  const wrap = document.getElementById(prefix + '-courses-wrap');
+  if (wrap) wrap.style.display = (status === 'present') ? 'block' : 'none';
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => {
+    if (e.target === m) closeModal(m.id.replace('-modal', ''));
+  });
+});
+
+// ── Load data ──────────────────────────────────────────────────────────────
+async function loadStats() {
+  const r = await fetch('/api/stats');
+  const d = await r.json();
+  stats = d.stats;
+  renderDashboardStats();
+  renderGPA(d.gpa_estimate);
+}
+
+async function loadCourses() {
+  const r = await fetch('/api/courses');
+  courses = await r.json();
+  coursesLoaded = true;
+  renderCourses();
+}
+
+async function loadSemFiles() {
+  const r = await fetch('/api/semester-files');
+  semFiles = await r.json();
+  renderResources();
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────────────
+function renderDashboardStats() {
+  if (!stats) return;
+  const s = stats;
+  document.getElementById('present-days').textContent = s.present_days;
+  document.getElementById('absent-days').textContent  = s.absent_days;
+  const pctEl = document.getElementById('current-pct');
+  pctEl.textContent = s.current_percentage + '%';
+  pctEl.className = 'stat-value ' + (s.current_percentage >= 90 ? 'success' : s.current_percentage >= 75 ? 'warning' : 'danger');
+
+  const prog = Math.min(100, s.progress_to_target);
+  document.getElementById('progress-text').textContent = prog + '%';
+  const bar = document.getElementById('progress-bar');
+  bar.style.width = prog + '%';
+  bar.className = 'progress-fill ' + (s.current_percentage >= 90 ? 'success' : s.current_percentage >= 75 ? 'warning' : 'danger');
+
+  const warn = document.getElementById('att-warning');
+  if (s.current_percentage >= 90) {
+    warn.innerHTML = `<div class="alert alert-success">✅ ON TRACK — ${s.current_percentage}% attendance. Keep it up!</div>`;
+  } else if (s.achievable) {
+    warn.innerHTML = `<div class="alert alert-warning">⚠️ Need <strong>${Math.ceil(s.needed_present)}</strong> more present days out of ${s.remaining_days} remaining (${s.required_percentage_remaining}% needed).</div>`;
+  } else {
+    warn.innerHTML = `<div class="alert alert-danger">❌ CRITICAL: 90% target unreachable. Attend ALL remaining classes!</div>`;
+  }
+}
+
+function renderGPA(gpa) {
+  if (!gpa || Object.keys(gpa).length === 0) return;
+  const container = document.getElementById('gpa-estimate');
+  // Wait for courses to be loaded; if not, use code only
+  let html = '<table class="data-table"><tr><th>Course</th><th>Total / 100</th><th>Status</th></tr>';
+  for (const [code, d] of Object.entries(gpa)) {
+    const t = d.total;
+    const status = t >= 80 ? '🟢 A+' : t >= 75 ? '🟢 A' : t >= 70 ? '🟡 A-' : t >= 65 ? '🟡 B+' : t >= 60 ? '🟠 B' : t > 0 ? '🔴 C' : '⬜ —';
+    html += `<tr><td><strong>${code}</strong><br><small style="color:#64748b">${d.name}</small></td><td><strong>${t}</strong></td><td>${status}</td></tr>`;
+  }
+  html += '</table>';
+  container.innerHTML = html;
+}
+
+// ── Today's Classes ────────────────────────────────────────────────────────
+async function renderTodayClasses() {
+  const r = await fetch('/api/today-check');
+  const d = await r.json();
+  const el = document.getElementById('today-classes');
+  if (!d.has_classes) {
+    el.innerHTML = '<p style="text-align:center;color:#64748b;padding:20px;">No classes today 🎉</p>';
+    return;
+  }
+  let html = '<table class="data-table"><tr><th>#</th><th>Time</th><th>Course</th><th>Teacher</th></tr>';
+  d.classes.forEach(c => {
+    html += `<tr><td class="center">${c[0]}</td><td>${c[1]}</td><td><strong>${c[2]}</strong></td><td>${c[3]}</td></tr>`;
+  });
+  html += '</table>';
+  if (!d.marked) {
+    html += `<div style="margin-top:14px;text-align:center;"><button class="btn-primary" onclick="openModal('today-att')">✅ Mark Attendance</button></div>`;
+  } else {
+    html += `<div style="margin-top:14px;" class="alert alert-success">✅ Marked as <strong>${d.record.status}</strong></div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ── Attendance ─────────────────────────────────────────────────────────────
+async function renderAttendance() {
+  const r = await fetch('/api/attendance');
+  const d = await r.json();
+  const s = d.stats;
+  document.getElementById('att-present').textContent  = s.present_days;
+  document.getElementById('att-absent').textContent   = s.absent_days;
+  document.getElementById('att-holiday').textContent  = s.holiday_days;
+  document.getElementById('att-total').textContent    = s.recorded_days;
+
+  const el = document.getElementById('att-records');
+  if (d.records.length === 0) {
+    el.innerHTML = '<p style="text-align:center;color:#64748b;padding:20px;">No records yet. Start marking your attendance!</p>';
+    return;
+  }
+  let html = '<table class="data-table"><tr><th>Date</th><th>Day</th><th>Status</th><th>Notes</th><th>Action</th></tr>';
+  d.records.forEach(rec => {
+    const day = new Date(rec.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short' });
+    const sc = rec.status === 'present' ? 'color:var(--success)' : rec.status === 'absent' ? 'color:var(--danger)' : 'color:var(--info)';
+    html += `<tr>
+      <td>${rec.date}</td><td>${day}</td>
+      <td style="${sc}"><strong>${rec.status}</strong></td>
+      <td>${rec.notes || '—'}</td>
+      <td><button class="btn-danger btn-sm" onclick="deleteAtt('${rec.date}')">🗑</button></td>
+    </tr>`;
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+
+async function deleteAtt(dateStr) {
+  if (!confirm(`Delete attendance record for ${dateStr}?`)) return;
+  const r = await fetch('/api/attendance/' + dateStr, { method: 'DELETE' });
+  if (r.ok) { toast('🗑 Deleted ' + dateStr); await loadStats(); renderAttendance(); }
+  else { const e = await r.json(); toast('❌ ' + e.detail); }
+}
+
+// ── Submit Attendance ──────────────────────────────────────────────────────
+async function submitAttendance(event, prefix) {
+  event.preventDefault();
+  const dateVal   = document.getElementById(prefix + '-date').value;
+  const statusVal = document.getElementById(prefix + '-status').value;
+  const courseSel = document.getElementById(prefix + '-courses');
+  const coursesArr = courseSel ? Array.from(courseSel.selectedOptions).map(o => o.value) : [];
+  const notesVal  = document.getElementById(prefix + '-notes').value;
+
+  const r = await fetch('/api/attendance', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ date: dateVal, status: statusVal, courses_attended: coursesArr, notes: notesVal })
+  });
+  const d = await r.json();
+  if (r.ok) {
+    toast('✅ Attendance marked!');
+    closeModal(prefix);
+    await loadStats();
+    renderAttendance();
+    renderTodayClasses();
+  } else {
+    toast('❌ ' + (d.detail || 'Error'));
+  }
+}
+
+// ── Routine ────────────────────────────────────────────────────────────────
+async function renderRoutine() {
+  const r = await fetch('/api/routine');
+  const d = await r.json();
+  const days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const allPeriods = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  function periodCovers(entryPeriod, targetPeriod) {
+    const s = String(entryPeriod);
+    return s.includes(String(targetPeriod));
+  }
+
+  let html = '<table class="data-table"><tr><th>Period</th>';
+  days.forEach(day => html += `<th>${day.substring(0, 3)}</th>`);
+  html += '</tr>';
+  allPeriods.forEach(p => {
+    html += `<tr><td><strong>P${p}</strong></td>`;
+    days.forEach(day => {
+      const cls = (d.routine[day] || []).find(c => periodCovers(c[0], p));
+      if (cls) html += `<td><strong>${cls[2]}</strong><br><small>${cls[1]}</small><br><small style="color:#64748b">${cls[3]}</small></td>`;
+      else html += '<td class="cell-empty">—</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</table>';
+  document.getElementById('routine-table').innerHTML = html;
+}
+
+// ── Courses ────────────────────────────────────────────────────────────────
+function renderCourses() {
+  const mkList = (list, elId) => {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    el.innerHTML = '<div class="course-list">' + list.map(c => `
+      <div class="course-item">
+        <div>
+          <div class="course-code">${c.code}</div>
+          <div class="course-name">${c.name}</div>
+        </div>
+        <div class="course-credits">${c.credits} cr</div>
+      </div>`).join('') + '</div>';
+  };
+  mkList(courses.theory,    'theory-courses');
+  mkList(courses.sessional, 'sessional-courses');
+}
+
+// ── Marks ──────────────────────────────────────────────────────────────────
+async function renderMarks() {
+  const r = await fetch('/api/marks');
+  const d = await r.json();
+  const el = document.getElementById('marks-content');
+  if (Object.keys(d.marks).length === 0) {
+    el.innerHTML = `<div style="text-align:center;padding:30px;color:#64748b;">
+      <p style="margin-bottom:16px">No marks entered yet.</p>
+      <button class="btn-primary" onclick="openModal('update-marks')">+ Add Marks</button>
+    </div>`;
+    return;
+  }
+  let html = '<div style="overflow-x:auto"><table class="data-table"><tr><th>Course</th><th>CT1</th><th>CT2</th><th>CT3</th><th>CT4</th><th>Assign</th><th>Att</th><th>Final</th><th>Total</th></tr>';
+  for (const [code, m] of Object.entries(d.marks)) {
+    const total = (m.ct1||0)+(m.ct2||0)+(m.ct3||0)+(m.ct4||0)+(m.assignment||0)+(m.attendance_marks||0)+(m.final||0);
+    const tc = courses.theory.find(c => c.code === code);
+    html += `<tr>
+      <td><strong>${code}</strong>${tc ? `<br><small style="color:#64748b">${tc.name}</small>` : ''}</td>
+      <td class="center">${m.ct1 ?? '—'}</td><td class="center">${m.ct2 ?? '—'}</td>
+      <td class="center">${m.ct3 ?? '—'}</td><td class="center">${m.ct4 ?? '—'}</td>
+      <td class="center">${m.assignment ?? '—'}</td>
+      <td class="center">${m.attendance_marks ?? '—'}</td>
+      <td class="center">${m.final ?? '—'}</td>
+      <td class="center"><strong>${total.toFixed(1)}/100</strong></td>
+    </tr>`;
+  }
+  html += '</table></div>';
+  el.innerHTML = html;
+}
+
+async function submitMarks(event) {
+  event.preventDefault();
+  const v = id => document.getElementById(id).value;
+  const n = id => v(id) !== '' ? parseFloat(v(id)) : null;
+  const body = {
+    course_code: v('marks-course'),
+    ct1: n('m-ct1'), ct2: n('m-ct2'), ct3: n('m-ct3'), ct4: n('m-ct4'),
+    assignment: n('m-assignment'), attendance_marks: n('m-att-marks'), final: n('m-final')
+  };
+  const r = await fetch('/api/marks', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const d = await r.json();
+  if (r.ok) {
+    toast('✅ Marks saved!');
+    closeModal('update-marks');
+    renderMarks();
+    loadStats();
+  } else {
+    toast('❌ ' + (d.detail || 'Error saving marks'));
+  }
+}
+
+// ── Resources ──────────────────────────────────────────────────────────────
+function fileItem(icon, name, relPath, meta) {
+  return `<div class="file-item" onclick="openFile('${relPath.replace(/'/g,"\\'")}')">
+    <span class="file-item-icon">${icon}</span>
+    <div class="file-item-info">
+      <div class="file-item-name" title="${name}">${name}</div>
+      ${meta ? `<div class="file-item-meta">${meta}</div>` : ''}
+    </div>
+    <span style="color:#94a3b8;font-size:0.8rem">▶</span>
+  </div>`;
+}
+
+function renderResources() {
+  if (!semFiles.courses) return;
+
+  // Quick links
+  const quickLinks = [
+    { icon: '📅', title: 'Class Routine', desc: '2022 Series (Current)', rel: 'Class Routine (2022 Series).pdf' },
+    { icon: '📅', title: 'Routine (3-2)', desc: 'Alternate routine PDF', rel: 'Class Routine_(3-2).pdf' },
+    { icon: '🎓', title: 'Curriculum', desc: 'Course curriculum PDF', rel: 'course-curriculum_11.pdf' },
+    { icon: '📁', title: 'MTE 3201 Folder', desc: 'Power Electronics', rel: 'MTE 3201' },
+    { icon: '📁', title: 'MTE 3205 Folder', desc: 'Hydraulic & Pneumatic', rel: 'MTE 3205' },
+    { icon: '📁', title: 'ME 3255 Folder', desc: 'Machine Dynamics', rel: 'ME 3255' },
+    { icon: '📁', title: 'ME 3265 Folder', desc: 'Fluid Mechanics', rel: 'ME 3265' },
+    { icon: '📁', title: 'EEE 3287 Folder', desc: 'Network & Comms', rel: 'EEE 3287' },
+    { icon: '📁', title: 'Assignments', desc: 'All assignment PDFs', rel: 'Assignments' },
+    { icon: '📁', title: 'Questions', desc: 'Past papers', rel: 'Questions' },
+    { icon: '📁', title: 'Sessionals', desc: 'Lab reports', rel: 'Sessionals' },
+  ];
+  document.getElementById('quick-links-grid').innerHTML = quickLinks.map(q =>
+    `<button class="resource-card" onclick="openFile('${q.rel.replace(/'/g,"\\'")}')">
+      <div class="resource-icon">${q.icon}</div>
+      <div class="resource-title">${q.title}</div>
+      <div class="resource-desc">${q.desc}</div>
+    </button>`
+  ).join('');
+
+  // Course tabs
+  const courseOrder = ['MTE 3201', 'MTE 3205', 'ME 3255', 'ME 3265', 'EEE 3287', 'MTE 3200'];
+  const tabBar  = document.getElementById('course-tabs');
+  const paneBox = document.getElementById('course-file-panes');
+  tabBar.innerHTML = '';
+  paneBox.innerHTML = '';
+
+  courseOrder.forEach((code, i) => {
+    const data = semFiles.courses[code];
+    if (!data) return;
+    const tabId = 'ct-' + code.replace(/ /g, '-');
+
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = code;
+    btn.onclick = () => switchCourseTab(tabId, btn);
+    tabBar.appendChild(btn);
+
+    const pane = document.createElement('div');
+    pane.className = 'tab-pane' + (i === 0 ? ' active' : '');
+    pane.id = tabId;
+
+    // Folder buttons
+    let html = '';
+    if (data.folders.length) {
+      html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">';
+      data.folders.forEach(f => {
+        html += `<button class="resource-card" style="min-width:120px;padding:10px 14px;text-align:center;" onclick="openFile('${f.rel.replace(/'/g,"\\'")}')">
+          <div style="font-size:1.4rem">📁</div>
+          <div style="font-weight:600;font-size:0.85rem;margin-top:4px">${f.name}</div>
+        </button>`;
+      });
+      html += '</div>';
+    }
+    // PDF list
+    if (data.pdfs.length) {
+      html += '<div class="file-list">' + data.pdfs.map(f =>
+        fileItem('📄', f.name, f.rel, f.size_kb + ' KB')
+      ).join('') + '</div>';
+    } else {
+      html += '<p style="color:#64748b;padding:12px">No PDF files found in this folder.</p>';
+    }
+    pane.innerHTML = html;
+    paneBox.appendChild(pane);
+  });
+
+  // Question papers
+  const qPrev  = document.getElementById('qfiles-prev');
+  const qFinal = document.getElementById('qfiles-final');
+  qPrev.innerHTML  = (semFiles.questions.prev  || []).map(f => fileItem('📋', f.name, f.rel)).join('') || '<p style="color:#64748b;padding:12px">None found.</p>';
+  qFinal.innerHTML = (semFiles.questions.final || []).map(f => fileItem('📋', f.name, f.rel)).join('') || '<p style="color:#64748b;padding:12px">None found.</p>';
+
+  // Assignments
+  const aEl = document.getElementById('assign-files');
+  aEl.innerHTML = (semFiles.assignments || []).map(f =>
+    fileItem('📝', f.name, f.rel, f.course)
+  ).join('') || '<p style="color:#64748b;padding:12px">None found.</p>';
+
+  // Sessionals
+  const sEl = document.getElementById('sessional-files');
+  sEl.innerHTML = (semFiles.sessionals || []).map(f =>
+    fileItem('🔬', f.name, f.rel, f.course)
+  ).join('') || '<p style="color:#64748b;padding:12px">None found.</p>';
+}
+
+function switchCourseTab(tabId, btn) {
+  document.querySelectorAll('#course-file-panes .tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#course-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function switchQTab(which, btn) {
+  document.querySelectorAll('[id^="q-"]').forEach(p => p.classList.remove('active'));
+  btn.closest('.card').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('q-' + which).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    await Promise.all([loadStats(), loadCourses(), loadSemFiles()]);
+    await Promise.all([renderAttendance(), renderTodayClasses(), renderRoutine(), renderMarks()]);
+    checkTodayPrompt();
+  } catch (e) {
+    console.error('Init error:', e);
+    toast('⚠️ Some data failed to load. Check server is running.');
+  }
+}
+
+async function checkTodayPrompt() {
+  try {
+    const r = await fetch('/api/today-check');
+    const d = await r.json();
+    if (d.has_classes && !d.marked) {
+      setTimeout(() => {
+        if (confirm(`🕐 You have ${d.classes_count} class(es) today (${d.day}). Mark attendance now?`)) {
+          openModal('today-att');
+        }
+      }, 1500);
+    }
+  } catch (e) { /* silent */ }
+}
+
+init();
+
+// Auto-refresh stats every 60s
+setInterval(async () => {
+  await loadStats();
+  renderAttendance();
+  renderTodayClasses();
+}, 60000);
+</script>
+</body>
+</html>

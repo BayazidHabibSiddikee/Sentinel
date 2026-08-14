@@ -1,0 +1,99 @@
+{
+  "start_date": "2026-07-18",
+  "attendance": [
+    {
+      "date": "2026-07-26",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-22",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-28",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-27",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-25",
+      "status": "absent",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-20",
+      "status": "absent",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-21",
+      "status": "absent",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-07-18",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-10",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-09",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-08",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-04",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-03",
+      "status": "absent",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-02",
+      "status": "present",
+      "courses_attended": [],
+      "notes": ""
+    },
+    {
+      "date": "2026-08-01",
+      "status": "absent",
+      "courses_attended": [],
+      "notes": ""
+    }
+  ],
+  "marks": {},
+  "total_days": 65,
+  "days_lost": 0,
+  "target_percentage": 90
+}
