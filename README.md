@@ -1,10 +1,10 @@
-# Sentinel — AI Academic Weapon for RUET Students 👑🔥
+# Sentinel
 
-> *"Understand the system. Master the material. Crush the exam. Conquer RUET."*
+**Your AI academic weapon for RUET — cold, ruthless, and relentlessly on your side.**
 
-An AI-powered academic platform built for **Rajshahi University of Engineering & Technology (RUET)** students. Sentinel is a ruthlessly intelligent study enforcer that transforms your course materials into a personalized, conversational knowledge base — and makes sure you actually use it.
+Sentinel is a self-hosted, AI-powered academic platform built for RUET students. It turns your own lecture slides, textbooks, and past papers into a personal, relentless academic enforcer — one that answers questions grounded in *your* materials, drills you on exam patterns, guides (never spoon-feeds) your assignments, and tells you exactly what to study next.
 
-Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGraph.
+Built for the **Reimagine Learning at RUET** hackathon challenge.
 
 ---
 
@@ -13,7 +13,7 @@ Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGra
 - [Overview](#overview)
 - [The Problem](#the-problem)
 - [The Solution](#the-solution)
-- [How AI is Used](#how-ai-is-used)
+- [How AI Is Used](#how-ai-is-used)
 - [Architecture](#architecture)
 - [Features](#features)
 - [Setup](#setup)
@@ -22,39 +22,24 @@ Built with FastAPI, LangChain/OpenRouter, FAISS, PostgreSQL, PDF.js, and LangGra
 - [File Structure](#file-structure)
 - [How It Works](#how-it-works)
 - [Built With](#built-with)
-- [Submission](#submission)
 - [License](#license)
-
----
-
-## Screenshots
-
-![Landing Page](static/images/screenshots/landing_page.png)
-
-![Main Chat & Tools](static/images/screenshots/main_chat_tools.png)
-
-![Library View](static/images/screenshots/library_view.png)
-
-![Settings View](static/images/screenshots/settings_view.png)
 
 ---
 
 ## Overview
 
-**Sentinel** is a self-hosted, AI-powered academic platform that solves the most frustrating parts of student life at RUET:
+RUET students juggle scattered course materials across drives, WhatsApp, and Telegram groups, with no smart way to prepare for exams from their own lecture slides, no guided help on assignments, and no personalized feedback on what they specifically need to study next.
 
-- Scattered course materials across drives, WhatsApp, and Telegram groups
-- No smart way to prepare for exams from your own lecture slides
-- Assignments with no guided explanation — just a blank page
-- No personalized feedback on what YOU specifically need to study next
+Sentinel solves this by giving every RUET student a private, self-hosted AI academic assistant that:
 
-Sentinel gives every RUET student their own relentless AI academic enforcer — one that knows your syllabus, reads your books, drills you on past questions, and refuses to let you coast.
-
----
+- Knows your syllabus and reads your books
+- Drills you on past exam questions
+- Refuses to let you coast
 
 ## The Problem
 
 RUET students juggle:
+
 - Multiple courses with dense lecture slides and textbooks
 - Class tests, sessional marks, and semester exams hitting simultaneously
 - Assignment submissions with no one to explain the underlying concepts
@@ -63,42 +48,30 @@ RUET students juggle:
 
 The result: surface-level cramming, last-minute panic, and wasted potential.
 
----
-
 ## The Solution
 
 Sentinel reimagines the RUET learning experience with AI at its core:
 
 | Feature | What It Does |
-|---------|-------------|
-| **AI Course Assistant** | Upload lecture slides → ask anything → get answers grounded in YOUR materials |
+| --- | --- |
+| **AI Course Assistant** | Upload lecture slides → ask anything → get answers grounded in *your* materials |
 | **Smart Exam Prep** | Upload notes → auto-generate study plan → drill practice questions → identify weak topics |
 | **Assignment Guidance** | Get targeted hints and concept explanations — never the direct answer |
 | **Question Bank Drilling** | Past RUET exam patterns analyzed, high-yield topics identified |
 | **Personalized Dashboard** | Sentinel analyzes your weak areas and tells you exactly what to study next |
 | **Conversational Knowledge Base** | All uploaded materials become searchable through a chat interface |
 
----
+## How AI Is Used
 
-## How AI is Used
+Sentinel uses the **Gemini API (via OpenRouter)** as its core intelligence, with AI woven into every layer:
 
-Sentinel uses the **Gemini API** (via OpenRouter) as its core intelligence, with AI woven into every layer:
-
-- **RAG (Retrieval-Augmented Generation)**: Student uploads their textbooks and lecture notes. FAISS vector search + BM25 keyword matching retrieves the most relevant excerpts and injects them into every prompt — so answers are always grounded in the student's own materials, not generic internet knowledge.
-
-- **Intent Classification**: A lightweight classifier detects whether the student wants to learn a concept (`learn`), get code help (`code`), write a lab report (`lab`), or just chat. Each intent routes to a specialized structured output mode.
-
-- **Structured Learning Modes**: The AI produces structured JSON output in Teacher, Coder, or Lab Report format — not just a chat bubble, but a formatted card with concept → explanation → math → takeaways.
-
-- **Exam Preparation Engine**: Sentinel identifies high-yield topics from uploaded syllabi, generates rapid-fire practice questions, critiques answers, and builds a personalized study schedule.
-
-- **Assignment Drill**: The AI uses Socratic questioning — it never gives the answer directly. It exposes the gap in the student's understanding and guides them to the solution through targeted hints.
-
-- **Multi-Agent Tool Pipeline**: LangGraph orchestrates background tools (web search, PDF download, YouTube transcript, repo analysis) before the LLM responds — so the AI always has the most current, relevant context.
-
-- **User Vault**: The AI extracts facts about the student (their weak topics, study habits, deadlines) and stores them in a persistent knowledge vault, enabling genuinely personalized recommendations over time.
-
----
+- **RAG (Retrieval-Augmented Generation)** — Students upload their textbooks and lecture notes. FAISS vector search + BM25 keyword matching retrieves the most relevant excerpts and injects them into every prompt, so answers are always grounded in the student's own materials, not generic internet knowledge.
+- **Intent Classification** — A lightweight classifier detects whether the student wants to learn a concept (`learn`), get code help (`code`), write a lab report (`lab`), or just chat. Each intent routes to a specialized structured output mode.
+- **Structured Learning Modes** — The AI produces structured JSON output in Teacher, Coder, or Lab Report format — a formatted card with concept → explanation → math → takeaways, not just a chat bubble.
+- **Exam Preparation Engine** — Sentinel identifies high-yield topics from uploaded syllabi, generates rapid-fire practice questions, critiques answers, and builds a personalized study schedule.
+- **Assignment Drill** — The AI uses Socratic questioning; it never gives the answer directly. It exposes the gap in the student's understanding and guides them to the solution through targeted hints.
+- **Multi-Agent Tool Pipeline** — LangGraph orchestrates background tools (web search, PDF download, YouTube transcript, repo analysis) before the LLM responds, so the AI always has current, relevant context.
+- **User Vault** — The AI extracts facts about the student (weak topics, study habits, deadlines) and stores them in a persistent knowledge vault, enabling genuinely personalized recommendations over time.
 
 ## Architecture
 
@@ -106,56 +79,55 @@ Sentinel uses the **Gemini API** (via OpenRouter) as its core intelligence, with
 ┌─────────────────────────────────────────────────────────┐
 │                    Frontend (HTML/JS)                     │
 │   ┌──────────┐  ┌──────────┐  ┌──────────────────────┐  │
-│   │ Landing  │  │ Chat UI  │  │ Library (PDF.js)     │  │
-│   │ Page     │  │ Streaming│  │ Tools + RAG Status   │  │
+│   │ Landing  │  │ Chat UI  │  │ Library (PDF.js)      │  │
+│   │ Page     │  │ Streaming│  │ Tools + RAG Status    │  │
 │   └──────────┘  └──────────┘  └──────────────────────┘  │
 └────────────────────────┬────────────────────────────────┘
-                         │ HTTP / SSE
-┌────────────────────────▼────────────────────────────────┐
+                          │ HTTP / SSE
+┌─────────────────────────▼───────────────────────────────┐
 │                 main.py (FastAPI :5090)                   │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────────┐  │
-│  │ Onboarding│  │ Settings │  │ Chat + Tool APIs     │  │
-│  │ Flow      │  │ API      │  │ Document APIs        │  │
-│  └──────────┘  └──────────┘  └──────────────────────┘  │
-└────────┬───────────────────────────────────┬────────────┘
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────────┐   │
+│  │Onboarding│  │ Settings │  │ Chat + Tool APIs      │   │
+│  │Flow      │  │ API      │  │ Document APIs         │   │
+│  └──────────┘  └──────────┘  └──────────────────────┘   │
+└────────┬───────────────────────────────────┬─────────────┘
          │                                   │
-┌────────▼──────────┐            ┌───────────▼───────────┐
+┌────────▼──────────┐            ┌───────────▼────────────┐
 │    marin.py        │            │   rag_server.py        │
-│  (Sentinel Core)  │            │   (FastAPI :5091)     │
-│  ┌──────────────┐  │   HTTP     │  ┌────────────────┐  │
-│  │ Preprocessor  │  │────────────│  │ FAISS Index     │  │
-│  │ (RAG+Page)   │  │            │  │ books/          │  │
-│  └──────┬───────┘  │            │  │ Hybrid Search   │  │
-│  ┌──────▼───────┐  │            │  └────────────────┘  │
-│  │ Persona      │  │            └──────────────────────┘
-│  │ (Streaming)  │  │
+│  (Sentinel Core)   │            │   (FastAPI :5091)      │
+│  ┌──────────────┐  │   HTTP     │  ┌────────────────┐    │
+│  │ Preprocessor  │  │───────────│  │ FAISS Index    │    │
+│  │ (RAG + Page)  │  │            │  │ books/         │    │
+│  └──────┬───────┘  │            │  │ Hybrid Search   │    │
+│  ┌──────▼───────┐  │            │  └────────────────┘    │
+│  │ Persona       │  │            └─────────────────────┘
+│  │ (Streaming)   │  │
 │  └──────────────┘  │
-└────────────────────┘
+└─────────────────────┘
          │
 ┌────────▼──────────┐
 │   database.py      │
-│   PostgreSQL       │
-│   (6 tables)       │
+│   PostgreSQL        │
+│   (6 tables)        │
 └────────────────────┘
 ```
 
 **Ports:**
+
 - `:5090` — Main FastAPI server (chat, settings, tools, library)
 - `:5091` — RAG server (FAISS vector search, document indexing)
 
----
-
 ## Features
 
-### Sentinel Persona — RUET-FORGE-01 👑🔥
+### Sentinel Persona — RUET-FORGE-01
 
 Sentinel is a cold, relentless academic enforcer tuned specifically for RUET students:
 
 - References RUET realities: semester exams, class tests, sessional marks, departmental projects
 - Switches to **Exam Battle Mode** when a test is approaching — drills high-yield topics, generates practice questions, enforces study schedules
-- Uses **Assignment Drill mode** — Socratic questioning, targeted hints, never direct answers
+- Uses **Assignment Drill** mode — Socratic questioning, targeted hints, never direct answers
 - Tracks deadlines and weaponizes accountability
-- Dark, cutting academic tone with British slang for slackers
+- Dark, cutting academic tone
 
 ### Landing Page
 
@@ -164,37 +136,35 @@ Bold, atmospheric gateway. Enter your name, set your study preferences, and laun
 ### Core Chat
 
 - Streaming responses with real-time token delivery
-- Vibe detection (lovely, flirty, angry, sad, excited, playful, neutral) — tuned for academic contexts
-- Intent classification: chat, image generation, learn, code, lab
+- Vibe detection (lovely, flirty, angry, sad, excited, playful, neutral) tuned for academic contexts
+- Intent classification: `chat`, `image generation`, `learn`, `code`, `lab`
 - Chat history persisted in PostgreSQL
-- RAG context injection — relevant excerpts from YOUR books injected into every prompt
+- RAG context injection — relevant excerpts from your books injected into every prompt
 - Page-aware context — when reading a PDF, Sentinel gets the current page text
 
 ### Library & PDF Viewer
 
-- **PDF.js rendering** — browser-native PDF display with text selection
-- **Page navigation** — editable page number input, prev/next buttons, zoom controls
-- **Reading color customizer** — customizable background/text/highlight colors
-- **RAG progress indicator** — pulsing dot + percentage bar when indexing new files
-- **Document management** — upload, delete, open documents from the sidebar
+- PDF.js rendering — browser-native PDF display with text selection
+- Page navigation — editable page number input, prev/next buttons, zoom controls
+- Reading color customizer — customizable background/text/highlight colors
+- RAG progress indicator — pulsing dot + percentage bar when indexing new files
+- Document management — upload, delete, open documents from the sidebar
 
 ### Library Tools
 
-Built into the library sidebar:
-
 | Tool | Description |
-|------|-------------|
-| **Repo/Link** | Analyze GitHub repos and URLs |
-| **Quiz** | Generate a quiz on any topic (perfect for RUET exam prep) |
-| **Translate** | Translate text (9 languages) |
-| **Web Search** | DuckDuckGo search |
-| **PDF Download** | Download PDFs directly to `books/` with auto-RAG indexing |
+| --- | --- |
+| Repo/Link | Analyze GitHub repos and URLs |
+| Quiz | Generate a quiz on any topic (perfect for RUET exam prep) |
+| Translate | Translate text (9 languages) |
+| Web Search | DuckDuckGo search |
+| PDF Download | Download PDFs directly to `books/` with auto-RAG indexing |
 
 Tools auto-send results to Sentinel so she responds about them in chat.
 
 ### RAG (Retrieval-Augmented Generation)
 
-- Drop files into `books/` directory — your lecture slides, textbooks, past papers
+- Drop files into `books/` — your lecture slides, textbooks, past papers
 - Auto-indexed on startup and after each upload
 - Supports: PDF (with OCR fallback), DOCX, TXT, MD, PY, C/CPP/H
 - Hybrid search: FAISS vector similarity + BM25 keyword search + cross-encoder re-ranking
@@ -205,16 +175,16 @@ Tools auto-send results to Sentinel so she responds about them in chat.
 
 Triggered automatically when Sentinel detects academic intent:
 
-- **Teacher Mode** (`learn`): concept → explanation → math → takeaways
-- **Coder Mode** (`code`): language → snippet → explanation → dependencies
-- **Lab Report Mode** (`lab`): title → objective → equipment → procedure → results
+- **Teacher Mode** (`learn`) — concept → explanation → math → takeaways
+- **Coder Mode** (`code`) — language → snippet → explanation → dependencies
+- **Lab Report Mode** (`lab`) — title → objective → equipment → procedure → results
 
 ### Study Tools
 
-- **Flashcards**: SuperMemo-2 spaced repetition (quality 0-5)
-- **Pomodoro Timer**: Focus session tracking
-- **Quiz Generator**: Multiple-choice quizzes with explanations — grounded in your uploaded materials
-- **Study Stats**: Total focus time by topic
+- **Flashcards** — SuperMemo-2 spaced repetition (quality 0–5)
+- **Pomodoro Timer** — focus session tracking
+- **Quiz Generator** — multiple-choice quizzes with explanations, grounded in your uploaded materials
+- **Study Stats** — total focus time by topic
 
 ### Proactive Accountability Engine
 
@@ -223,28 +193,27 @@ Triggered automatically when Sentinel detects academic intent:
 - SSE broadcast to connected clients
 - Sentinel will come for you if you go quiet too long
 
----
-
 ## Setup
 
 ### Prerequisites
 
-- **Python 3.10+**
-- **PostgreSQL 15+**
-- **OpenRouter API key** (free tier works — https://openrouter.ai)
+- Python 3.10+
+- PostgreSQL 15+
+- OpenRouter API key (free tier works — <https://openrouter.ai>)
 
 ### Docker Install (Recommended)
 
 ```bash
 # 1. Clone and start
-git clone https://github.com/BayazidHabibSiddikee/Marin_Evil_Sentinel.git
-cd marin-kitagawa
+git clone https://github.com/BayazidHabibSiddikee/Sentinel.git
+cd Sentinel
 docker-compose up --build
 
 # 2. Access at http://localhost:5090
 ```
 
 The Docker setup includes:
+
 - `marin-server` — the app (ports 5090, 5091), runs as root to fix permissions on startup
 - `marin-postgres` — PostgreSQL 15 (port 5432)
 - `entrypoint.sh` — fixes `books/` permissions on every container start
@@ -254,8 +223,8 @@ The Docker setup includes:
 
 ```bash
 # 1. Clone and setup
-git clone https://github.com/BayazidHabibSiddikee/Marin_Evil_Sentinel.git
-cd marin-kitagawa
+git clone https://github.com/BayazidHabibSiddikee/Sentinel.git
+cd Sentinel
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -274,9 +243,9 @@ python3 main.py             # starts on :5090
 
 ### First Run
 
-1. Open `http://localhost:5090`
+1. Open <http://localhost:5090>
 2. Onboarding wizard — enter your name, RUET department, study topics
-3. Enter your **OpenRouter API key**
+3. Enter your OpenRouter API key
 4. Click **Initialize** — Sentinel is ready to forge you
 
 ### Adding Study Materials
@@ -296,24 +265,22 @@ curl -X POST http://127.0.0.1:5091/reindex
 
 Or use the **PDF Download** tool in the library — it downloads and auto-indexes.
 
----
-
 ## Configuration
 
-### config.py
+### `config.py`
 
 | Constant | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | `EMBEDDING_MODEL` | `all-MiniLM-L6-v2` | Sentence-transformer for FAISS |
 | `IMAGE_MODEL` | `stabilityai/stable-diffusion-xl-beta-v2-2-2` | Image generation model |
 | `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` | OpenRouter API base |
-| `TOTAL_KB_MAX_MB` | `200` | Max total size for books/ |
-| `BOOKS_MAX_MB` | `96` | Max size for books/ sub-limit |
+| `TOTAL_KB_MAX_MB` | `200` | Max total size for `books/` |
+| `BOOKS_MAX_MB` | `96` | Max size for `books/` sub-limit |
 
 ### Environment Variables (Docker)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | `PG_HOST` | `localhost` | PostgreSQL host |
 | `PG_PORT` | `5432` | PostgreSQL port |
 | `PG_DB_NAME` | `postgres` | Database name |
@@ -321,53 +288,49 @@ Or use the **PDF Download** tool in the library — it downloads and auto-indexe
 | `PG_PASSWORD` | `postgres` | Database password |
 | `TZ` | `Asia/Dhaka` | Container timezone |
 
----
-
 ## API Reference
 
 ### Chat
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/chat` | Send message. Form fields: `message`, `theme`, `document`, `page`. Returns streaming response. |
-| `GET` | `/api/chat/history` | Get chat history (last 50 messages). |
-| `POST` | `/api/chat/context` | Save tool context for Sentinel. JSON: `{tool, result}`. |
+| --- | --- | --- |
+| POST | `/api/chat` | Send message. Form fields: `message`, `theme`, `document`, `page`. Returns streaming response. |
+| GET | `/api/chat/history` | Get chat history (last 50 messages). |
+| POST | `/api/chat/context` | Save tool context for Sentinel. JSON: `{tool, result}`. |
 
 ### Settings
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/settings` | Get all user settings. |
-| `POST` | `/api/settings` | Save settings. |
+| --- | --- | --- |
+| GET | `/api/settings` | Get all user settings. |
+| POST | `/api/settings` | Save settings. |
 
 ### Documents & Library
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/library` | Serve library HTML page. |
-| `GET` | `/api/documents` | List all documents in `books/`. |
-| `GET` | `/api/documents/{filename}/content` | Read document content. |
-| `GET` | `/api/documents/{filename}/page/{n}` | Extract text from PDF page n. |
-| `POST` | `/api/documents/upload` | Upload document to `books/`. |
-| `DELETE` | `/api/documents/{filename}` | Delete a document. |
+| --- | --- | --- |
+| GET | `/library` | Serve library HTML page. |
+| GET | `/api/documents` | List all documents in `books/`. |
+| GET | `/api/documents/{filename}/content` | Read document content. |
+| GET | `/api/documents/{filename}/page/{n}` | Extract text from PDF page `n`. |
+| POST | `/api/documents/upload` | Upload document to `books/`. |
+| DELETE | `/api/documents/{filename}` | Delete a document. |
 
 ### RAG
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/rag/health` | RAG server health + storage stats. |
-| `GET` | `/api/rag/index_progress` | Current indexing progress (state, current, total, file). |
+| --- | --- | --- |
+| GET | `/api/rag/health` | RAG server health + storage stats. |
+| GET | `/api/rag/index_progress` | Current indexing progress (state, current, total, file). |
 
 ### Tools
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/tools/search` | Web search. JSON: `{query, num_results}`. |
-| `POST` | `/api/tools/translate` | Translate. JSON: `{text, to}`. |
-| `POST` | `/api/tools/download_pdf` | Download PDF. JSON: `{url, filename}`. |
-| `POST` | `/api/tools/quiz` | Generate quiz. JSON: `{topic, num_questions}`. |
-
----
+| --- | --- | --- |
+| POST | `/api/tools/search` | Web search. JSON: `{query, num_results}`. |
+| POST | `/api/tools/translate` | Translate. JSON: `{text, to}`. |
+| POST | `/api/tools/download_pdf` | Download PDF. JSON: `{url, filename}`. |
+| POST | `/api/tools/quiz` | Generate quiz. JSON: `{topic, num_questions}`. |
 
 ## File Structure
 
@@ -375,51 +338,49 @@ Or use the **PDF Download** tool in the library — it downloads and auto-indexe
 sentinel/
 ├── main.py                 # FastAPI entry — all HTTP endpoints
 ├── marin.py                # Core AI — Sentinel persona, preprocessor, streaming
-├── config.py               # Shared constants — model names, paths, limits
-├── database.py             # PostgreSQL interface — 6 tables
-├── classifier.py           # Regex intent/vibe classifier
-├── llm_manager.py          # LLM Provider management, API validation & tool capability testing
-├── proactive_engine.py     # Idle detection, SSE broadcast
-├── rag_server.py           # FAISS RAG server (:5091)
-├── langgraph_agent.py      # 3-node LangGraph pipeline
-├── run.sh                  # Launcher — RAG + main server
-├── entrypoint.sh           # Docker entrypoint — fixes permissions
+├── config.py                # Shared constants — model names, paths, limits
+├── database.py               # PostgreSQL interface — 6 tables
+├── classifier.py             # Regex intent/vibe classifier
+├── llm_manager.py            # LLM provider management, API validation & tool capability testing
+├── proactive_engine.py        # Idle detection, SSE broadcast
+├── rag_server.py             # FAISS RAG server (:5091)
+├── langgraph_agent.py         # 3-node LangGraph pipeline
+├── run.sh                    # Launcher — RAG + main server
+├── entrypoint.sh              # Docker entrypoint — fixes permissions
 │
-├── tools/                  # Tool modules
-│   ├── web_search.py       # DuckDuckGo search
-│   ├── pdf_downloader.py   # PDF download → books/ + RAG index
-│   ├── repo_analyzer.py    # GitHub repo / webpage analysis
-│   ├── quiz_generator.py   # Quiz generation (RUET exam style)
-│   ├── translate.py        # Translation (9 languages)
-│   ├── doc_tools.py        # PDF/Word conversion
-│   ├── image_tool.py       # Image generation
-│   ├── email_tool.py       # Gmail SMTP
-│   ├── student_tools.py    # QR, unit conversion, calculator
+├── tools/                    # Tool modules
+│   ├── web_search.py          # DuckDuckGo search
+│   ├── pdf_downloader.py       # PDF download → books/ + RAG index
+│   ├── repo_analyzer.py        # GitHub repo / webpage analysis
+│   ├── quiz_generator.py       # Quiz generation (RUET exam style)
+│   ├── translate.py            # Translation (9 languages)
+│   ├── doc_tools.py            # PDF/Word conversion
+│   ├── image_tool.py           # Image generation
+│   ├── email_tool.py           # Gmail SMTP
+│   ├── student_tools.py        # QR, unit conversion, calculator
 │   ├── youtube_transcript.py
-│   └── bangla.py           # Bangla voice translator
+│   └── bangla.py               # Bangla voice translator
 │
 ├── templates/
-│   ├── landing.html        # Landing page
-│   ├── marin_chat.html     # Main chat UI
-│   └── library.html        # Library + PDF viewer + tools
+│   ├── landing.html           # Landing page
+│   ├── marin_chat.html         # Main chat UI
+│   └── library.html            # Library + PDF viewer + tools
 │
 ├── static/
-│   ├── images/             # Avatars, screenshots
-│   ├── uploads/            # User-uploaded images
-│   └── generated/          # AI-generated images
+│   ├── images/                 # Avatars, screenshots
+│   ├── uploads/                # User-uploaded images
+│   └── generated/              # AI-generated images
 │
-├── books/                  # Study materials (PDFs, lecture slides, past papers) — RAG indexed
-
+├── books/                     # Study materials (PDFs, lecture slides, past papers) — RAG indexed
+│
 ├── storage/
-│   └── faiss_db/           # FAISS index files
+│   └── faiss_db/               # FAISS index files
 │
-├── docker-compose.yml      # App + PostgreSQL
-├── Dockerfile              # Container build
-├── requirements.txt        # Python dependencies
-└── README.md               # This file
+├── docker-compose.yml           # App + PostgreSQL
+├── Dockerfile                  # Container build
+├── requirements.txt             # Python dependencies
+└── README.md                   # This file
 ```
-
----
 
 ## How It Works
 
@@ -493,8 +454,6 @@ Guides with targeted hints and Socratic questions
 Student arrives at the answer themselves. Learning happens.
 ```
 
----
-
 ## Built With
 
 - **Gemini API** (via OpenRouter) — Core LLM intelligence
@@ -508,44 +467,14 @@ Student arrives at the answer themselves. Learning happens.
 - **sentence-transformers** — Local embedding model (`all-MiniLM-L6-v2`)
 - **Google Cloud / Cloud Run** — Deployment target
 
----
-
-## Submission
-
-**Project Name:** Sentinel
-
-**Tagline:** *Your AI academic weapon for RUET — cold, ruthless, and relentlessly on your side.*
-
-**Problem:** RUET students have no intelligent, personalized way to interact with their own course materials. Studying is scattered, exam prep is generic, and assignments give no guided learning.
-
-**Solution:** Sentinel — an AI-powered platform where students upload their own lecture slides, textbooks, and past papers, then get personalized exam prep, assignment guidance, and a conversational knowledge base powered by RAG and Gemini.
-
-**Gemini Usage:** Gemini powers the core chat intelligence, structured learning modes (Teacher/Coder/Lab Report), exam question generation, and the user vault extraction that makes recommendations genuinely personalized over time.
-
-**GitHub:** https://github.com/BayazidHabibSiddikee/Marin_Evil_Sentinel
-
----
-
 ## License
 
 MIT License
 
 Copyright (c) 2025 Bayazid
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
